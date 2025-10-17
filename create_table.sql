@@ -148,7 +148,7 @@ values("Iya"),("Tidak");
 
 select * from preorder;
 
-/* 5. Table Status */
+/* 5. Table Status untuk Produk */
 create table status(
     idStatus int(10) primary key auto_increment,
     tglInput timestamp not null default current_timestamp,
@@ -158,7 +158,24 @@ create table status(
 insert into status(status)
 values("Belum Mulai"),("Dalam Proses"),("Selesai");
 
-select * from status;
+/* Rename table 'status' into 'statusProduk' */
+ALTER TABLE status
+RENAME TO status_produk;
+/* And change the column name adjusting with it */
+ALTER TABLE status_produk
+RENAME COLUMN idStatus to idStatusProduk,
+RENAME COLUMN status to statusProduk;
+
+UPDATE status_produk
+SET statusProduk = CASE 
+    WHEN idStatusProduk = 1 THEN 'Lagi Dijual'
+    WHEN idStatusProduk = 2 THEN 'Sedang Tidak Dijual'
+    WHEN idStatusProduk = 3 THEN 'Discontinued'
+    ELSE idStatusProduk  -- Keeps the current value for other rows
+END
+WHERE idStatusProduk IN (1,2,3);
+
+select * from status_produk;
 
 /* 6. Table Pengiriman (m:n) */
 /* Bagian ini sedikit kompleks berhubungan ekspedisi memiliki
@@ -183,7 +200,6 @@ alter table ekspedisi
     ADD CONSTRAINT idJenisEkspedisi_fkEkspedisi FOREIGN KEY (idJenisEkspedisi_fkEkspedisi)
     REFERENCES jenis_ekspedisi(idJenisEkspedisi);
 
-
 select * from ekspedisi;
 describe ekspedisi;
 
@@ -205,3 +221,106 @@ create table layanan_ekspedisi(
 );
 select * from layanan_ekspedisi;
 
+/* ============================ */
+/* = 3 - Table MP Management == */
+/* ============================ */
+
+/* Pertama-tama, bikinlah sekumpulan Table MP
+berupa List MP, Foto, dan Status */
+
+/* 1. Tabel Marketplace */
+create table list_marketplace(
+    idListMarketplace int(10) primary key auto_increment,
+    tglInput timestamp not null default current_timestamp,
+    namaMarketplace varchar(100) not null
+);
+select * from list_marketplace;
+
+/* 2. Tabel Foto */
+create table foto(
+    idFoto int(10) primary key auto_increment,
+    tglUpload timestamp not null default current_timestamp,
+    foto blob
+);
+select * from foto;
+
+/* 3. Tabel Status */
+create table status_foto (
+    idStatusFoto int(10) primary key auto_increment,
+    tglInput timestamp not null default current_timestamp,
+    statusFoto varchar(100) not null
+);
+select * from status_foto;
+
+/* Bagian ini merupakan Manajemen MP berupa penghubung
+m:n terdiri atas tabel 'produk terdaftar di MP', 
+'foto pada produk', dan 'status Foto Produk' */
+
+/* 1. table 'produk terdaftar di MP' */
+/* m:n antara tabel produk dengan list MP */
+/* Prinsip: 1 produk bisa banyak MP (1:n) */
+create table produk_terdaftar_di_MP(
+    idProdukTerdaftarDiMP int(10) primary key auto_increment,
+    tglInput timestamp not null default current_timestamp,
+    idProduk_fkProdukTerdaftarDiMP int(10) not null,
+    idListMarketplace_fkProdukTerdaftarDiMP int(10) not null
+);
+
+/* Add Constraint for each FKs */
+ALTER TABLE produk_terdaftar_di_MP
+    ADD CONSTRAINT idProduk_fkProdukTerdaftarDiMP FOREIGN KEY (idProduk_fkProdukTerdaftarDiMP)
+    REFERENCES produk(idProduk),
+    ADD CONSTRAINT idListMarketplace_fkProdukTerdaftarDiMP FOREIGN KEY (idListMarketplace_fkProdukTerdaftarDiMP)
+    REFERENCES list_marketplace(idListMarketplace);
+
+describe produk_terdaftar_di_MP;
+
+/* 2. table 'Foto pada Produk' */
+/* m:n antara tabel produk dengan foto */
+/* Prinsip: 1 produk bisa banyak foto (1:n) */
+create table foto_pada_produk(
+    idFotoPadaProduk int(10) primary key auto_increment,
+    tglInput timestamp not null default current_timestamp,
+    idProduk_fkFotoPadaProduk int(10) not null,
+    idFoto_fkFotoPadaProduk int(10) not null
+);
+
+/* Add FK Constraint */
+ALTER TABLE foto_pada_produk
+    ADD CONSTRAINT idProduk_fkFotoPadaProduk FOREIGN KEY (idProduk_fkFotoPadaProduk)
+    REFERENCES produk(idProduk),
+    ADD CONSTRAINT idFoto_fkFotoPadaProduk FOREIGN KEY (idFoto_fkFotoPadaProduk)
+    REFERENCES foto(idFoto);
+
+select * from foto_pada_produk;
+describe foto_pada_produk;
+
+/* 3. table 'Status Foto Produk' */
+/* m:n antara tabel produk dengan status */
+/* Prinsip: 1 produk hanya 1 status (1:1) */
+create table status_foto_produk(
+    idStatusFotoProduk int(10) primary key auto_increment,
+    tglInput timestamp not null default current_timestamp,
+    idProduk_fkStatusFotoProduk int(10) not null,
+    idStatus_fkStatusFotoProduk int(10) not null
+);
+alter table status_foto_produk
+rename column idStatus_fkStatusFotoProduk to idStatusFoto_fkStatusFotoProduk;
+
+/* Add Constraint FK */
+ALTER TABLE status_foto_produk
+    ADD CONSTRAINT idProduk_fkStatusFotoProduk FOREIGN KEY (idProduk_fkStatusFotoProduk)
+    REFERENCES produk(idProduk),
+    ADD CONSTRAINT idStatusFoto_fkStatusFotoProduk FOREIGN KEY (idStatusFoto_fkStatusFotoProduk)
+    REFERENCES status_foto(idStatusFoto);
+
+select * from status_foto_produk;
+describe status_foto_produk;
+
+/*
+alter table interaksi
+	add constraint idPerusahaan_fkInteraksi foreign key (idPerusahaan_fkInteraksi)
+    references perusahaan (idPerusahaan),
+    add constraint idProduk_fkInteraksi foreign key (idProduk_fkInteraksi)
+    references produk (idProduk);
+*/
