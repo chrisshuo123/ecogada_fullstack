@@ -129,3 +129,30 @@ insert into status(status)
 values("Belum Mulai"),("Dalam Proses"),("Selesai");
 
 select * from status;
+
+/* 6. Table Pengiriman (m:n) */
+/* Bagian ini sedikit kompleks berhubungan ekspedisi memiliki
+sistem tersendiri yang kompleks.  Contoh: */
+/* Ekspedisi: JNE, Jenis Ekspedisi: REG / OKE / YES */
+/* Begitupun bagi ekspedisi lainnya seperti SiCepat, 
+AnterAja, Kobra Express, dll. */
+/* Oleh itu, diperlukan tabel 'Ekspedisi' dan 'jenis_ekspedisi' */
+
+/* 6.1. Table Ekspedisi */
+create table ekspedisi(
+    idEkspedisi int(10) primary key auto_increment,
+    tglInput timestamp not null default current_timestamp,
+    namaEkspedisi varchar(100) not null,
+    idJenisEkspedisi_fk int(10)
+);
+
+select * from ekspedisi;
+
+/* 6.2. Table Jenis Ekspedisi */
+create table jenis_ekspedisi(
+    idJenisEkspedisi int(10) primary key auto_increment,
+    tglInput timestamp not null default current_timestamp,
+    jenisEkspedisi varchar(100) not null
+);
+
+select * from jenis_ekspedisi;
