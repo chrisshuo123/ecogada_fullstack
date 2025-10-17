@@ -62,6 +62,14 @@ CREATE TABLE produk (
     idStatus_fk int(10) not null
 );
 
+/* Rename Product's fk column */
+alter table produk
+	rename column idBrand_fkProduct to idBrand_fkProduk,
+    rename column idKategoriProduk_fk to idKategoriProduk_fkProduk,
+    rename column idKondisi_fk to idKondisi_fkProduk,
+    rename column idPO_fk to idPreOrder_fkProduk,
+    rename column idStatus_fk to idStatus_fkProduk;
+
 select * from produk;
 
 /* Tambahan tabel untuk tabel produk: */
@@ -145,6 +153,9 @@ create table ekspedisi(
     namaEkspedisi varchar(100) not null,
     idJenisEkspedisi_fk int(10)
 );
+/* Rename Ekspedisi's fk column */
+alter table ekspedisi
+    rename column idJenisEkspedisi_fk to idJenisEkspedisi_fkEkspedisi;
 
 select * from ekspedisi;
 
@@ -156,3 +167,19 @@ create table jenis_ekspedisi(
 );
 
 select * from jenis_ekspedisi;
+
+/* 6.3. Table Layanan Ekspedisi (m:n) */
+create table layanan_ekspedisi(
+    idLayananEkspedisi int(10) primary key auto_increment,
+    tglInput timestamp not null default current_timestamp,
+    idProduk_fkLayananEkspedisi int(10) not null,
+    idEkspedisi_fkLayananEkspedisi int(10) not null
+);
+select * from layanan_ekspedisi;
+
+/* Pembuatan Foreign Key Constraint */
+/*alter table produk
+	ADD CONSTRAINT idProfil_fkPerusahaan FOREIGN KEY (idProfil_fkPerusahaan)
+	REFERENCES profil (idProfil),
+    ADD CONSTRAINT idProduk_fkPerusahaan FOREIGN KEY (idProduk_fkPerusahaan)
+	REFERENCES produk (idProduk);*/
