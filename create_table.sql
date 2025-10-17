@@ -63,3 +63,69 @@ CREATE TABLE produk (
 );
 
 select * from produk;
+
+/* Tambahan tabel untuk tabel produk: */
+
+/* 1. tabel Brand */
+create table brand (
+    idBrand int(10) primary key auto_increment,
+    tglInput timestamp not null default current_timestamp,
+    brand varchar(100)
+);
+alter table brand
+modify column brand varchar(100) not null;
+
+select * from brand;
+describe brand;
+
+/* 2. tabel kategori produk */
+create table kategori_produk (
+    idKategoriProduk int(10) primary key auto_increment,
+    tglInput timestamp not null default current_timestamp,
+    kategoriProduk varchar(100) not null
+);
+select * from kategori_produk;
+
+/* 3. tabel kondisi (Baru / Bekas) */
+create table kondisi (
+    idKondisi int(10) primary key auto_increment,
+    tglInput timestamp not null default current_timestamp,
+    kondisi varchar(100) not null
+);
+
+insert into kondisi(kondisi)
+    values ("baru"),("bekas");
+
+UPDATE kondisi
+SET kondisi = CASE 
+    WHEN idKondisi = 1 THEN 'Baru'
+    WHEN idKondisi = 2 THEN 'Bekas'
+    ELSE idKondisi  -- Keeps the current value for other rows
+END
+WHERE idKondisi IN (1,2);
+
+select * from kondisi;
+
+/* 4. table PreOrder */
+create table preorder(
+    idPreOrder int(10) primary key auto_increment,
+    tglInput timestamp not null default current_timestamp,
+    preOrder varchar(100) not null
+);
+
+insert into preorder(preOrder)
+values("Iya"),("Tidak");
+
+select * from preorder;
+
+/* 5. Table Status */
+create table status(
+    idStatus int(10) primary key auto_increment,
+    tglInput timestamp not null default current_timestamp,
+    status varchar(100) not null
+);
+
+insert into status(status)
+values("Belum Mulai"),("Dalam Proses"),("Selesai");
+
+select * from status;
