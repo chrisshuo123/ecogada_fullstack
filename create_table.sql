@@ -70,7 +70,29 @@ alter table produk
     rename column idPO_fk to idPreOrder_fkProduk,
     rename column idStatus_fk to idStatus_fkProduk;
 
+/* Add Constraint on FK column in table 'produk' After finish 
+creating additional tables */
+alter table produk
+    ADD CONSTRAINT idBrand_fkProduk FOREIGN KEY (idBrand_fkProduk)
+    REFERENCES brand (idBrand),
+    ADD CONSTRAINT idKategoriProduk_fkProduk FOREIGN KEY (idKategoriProduk_fkProduk)
+    REFERENCES kategori_produk (idKategoriProduk),
+    ADD CONSTRAINT idKondisi_fkProduk FOREIGN KEY (idKondisi_fkProduk)
+    REFERENCES kondisi (idKondisi),
+    ADD CONSTRAINT idPreOrder_fkProduk FOREIGN KEY (idPreOrder_fkProduk)
+    REFERENCES preorder (idPreOrder),
+    ADD CONSTRAINT idStatus_fkProduk FOREIGN KEY (idStatus_fkProduk)
+    REFERENCES status (idStatus);
+
+/* Pembuatan Foreign Key Constraint */
+/*alter table produk
+	ADD CONSTRAINT idProfil_fkPerusahaan FOREIGN KEY (idProfil_fkPerusahaan)
+	REFERENCES profil (idProfil),
+    ADD CONSTRAINT idProduk_fkPerusahaan FOREIGN KEY (idProduk_fkPerusahaan)
+	REFERENCES produk (idProduk);*/
+
 select * from produk;
+describe produk;
 
 /* Tambahan tabel untuk tabel produk: */
 
@@ -156,8 +178,14 @@ create table ekspedisi(
 /* Rename Ekspedisi's fk column */
 alter table ekspedisi
     rename column idJenisEkspedisi_fk to idJenisEkspedisi_fkEkspedisi;
+/* Add constraint fk for table ekspedisi */
+alter table ekspedisi
+    ADD CONSTRAINT idJenisEkspedisi_fkEkspedisi FOREIGN KEY (idJenisEkspedisi_fkEkspedisi)
+    REFERENCES jenis_ekspedisi(idJenisEkspedisi);
+
 
 select * from ekspedisi;
+describe ekspedisi;
 
 /* 6.2. Table Jenis Ekspedisi */
 create table jenis_ekspedisi(
@@ -177,9 +205,3 @@ create table layanan_ekspedisi(
 );
 select * from layanan_ekspedisi;
 
-/* Pembuatan Foreign Key Constraint */
-/*alter table produk
-	ADD CONSTRAINT idProfil_fkPerusahaan FOREIGN KEY (idProfil_fkPerusahaan)
-	REFERENCES profil (idProfil),
-    ADD CONSTRAINT idProduk_fkPerusahaan FOREIGN KEY (idProduk_fkPerusahaan)
-	REFERENCES produk (idProduk);*/
