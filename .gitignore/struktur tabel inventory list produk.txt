@@ -1,0 +1,111 @@
+Schema List_Produk
+
+x table nama supplier (saran: dipindah ke profil saja)
+x- idSupplier
+x- tglInput
+v- nama kerjasama
+!- brand (fk)
+v- produk milik (fk)
+!- kategori produk (fk)
+
+tabel tambahan utk supplier:
+!- tabel brand (tepatnya masuk ke table produk)
+  idBrand, tglInput, brand
+- tabel produk_milik
+  idProdukMilik, tglInput, idNamaKerjasama_fk, produkMilik
+- tabel kategori_produk (tepatnya masuk ke table produk)
+  idKategoriProduk, tglInput, kategoriProduk
+
+RALAT BUAT TABEL SUPPLIER ==> TABEL PROFIL
+============================================================
+table user
+- idUser
+- tglRegistrasi
+- namaUser
+
+table profilKerjasama (untuk 'Produk Milik')
+- idProfilKerjasama
+- namaKerjasama
+
+Jika sesuai dengan spreadsheet, maka ini tabel m:n 'strategic_partnership':
+namaUser (user), brand (produk), produk milik (profilKerjasama), kategoriProduk (produk), namaProduk (produk)
+============================================================
+
+
+table produk
+- idProduk
+  no (diurut berdasarkan total n)
+- tgl registrasi
+- deskripsi produk
+- harga awal (harga dari kerjasama)
+- harga end user
+- profit (equation)
+- stok produk
+- sku
+- kondisi fk
+- berat
+- ukuran
+- po (iya / tidak) fk
+- pengiriman kurir
+- status fk
+
+tabel tambahan untuk produk
+- table preOrder
+  idPreOrder, tgl_input, preOrder (iya / tidaknya)
+- table status
+  idStatus, tgl_input, status (lagi dijual, sedang tidak dijual, discontinued)
+
+*table marketplace management
+- idMp_management
+- Ada di marketplace (toco, tiktok-tokopedia, shopee) m:n dgn produk
+  (idProduk, produk, idMarketplace) m:n fk
+- foto (jika tidak ada 'null', maka sertakan tulisan "tidak ada foto").
+  fk 1:n
+- status foto fk
+
+table tambahan utk marketplace:
+- table listMarketplace
+  idListMarketplace, tgl_input, namaMarketplace
+- table foto 
+  idFoto, tgl_upload, foto
+- table status
+  idStatus, tgl_input, status (belum mulai, dalam progress, selesai)
+
+*many-to-many (m:n) relationships MP management
+- idMp_management
+- idProduk_fk
+- idListMarketplace_fk
+- idFoto_fk
+- idStatus_fk
+
+
+------
+MP Management m:n
+
+Produk punya banyak MP, dan Foto
+
+table mp_registered_product (1:n)
+idMP		idProduk_fk
+0001MP 		0001P
+0002MP		0001P
+0003MP		0001P
+
+v table mp_foto (1:n)
+idMpFoto	idProduk_fk
+0001F		0001P
+0002F		0001P
+0003F		0001P
+
+table mp_management (1:1 relationship)
+idMpManagement		idProduk_fk
+0001MPM			0001P
+
+
+
+
+
+
+
+
+
+
