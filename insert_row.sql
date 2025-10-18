@@ -206,11 +206,12 @@ profil kerjasama: punya sendiri (id: 1), christian (id: 2), Sitaan punya Roy (id
 */
 select * from user;
 select * from profil_kerjasama;
-
+    
 insert into strategic_partnership(idUser_fkStrategicPartnership, idProfilKerjasama_fkStrategicPartnership, idProduk_fkStrategicPartnership)
 values
     /* Teh Frambozen */
     (1,1,1);
+
 /* Now insert another m:n row: */
 insert into strategic_partnership(idUser_fkStrategicPartnership, idProfilKerjasama_fkStrategicPartnership, idProduk_fkStrategicPartnership)
 values
@@ -298,4 +299,32 @@ values
     (1,3,42);
 
 select * from strategic_partnership;
-select idProduk, namaProduk from produk;
+DESCRIBE strategic_partnership;
+
+/* And now, using the Left Union to show: */
+/* - The User's & His or Her Partner */
+/* - The Product (including the details) */
+SELECT
+    SP.idStrategicPartnership,
+    U.namaUser,
+    PK.namaKerjasama,
+    P.namaProduk,
+    P.hargaAwal,
+    P.hargaAkhir
+FROM
+    strategic_partnership as SP
+LEFT JOIN
+    user as U ON SP.idUser_fkStrategicPartnership = U.idUser
+LEFT JOIN
+    profil_kerjasama as PK ON SP.idProfilKerjasama_fkStrategicPartnership = PK.idProfilKerjasama
+LEFT JOIN
+    produk as P ON SP.idProduk_fkStrategicPartnership = P.idProduk;
+
+SELECT idProduk, namaProduk, hargaAwal FROM produk;
+
+select * from profil_kerjasama;
+select * from produk;
+select * from user;
+describe user;
+describe profil_kerjasama;
+describe produk;
