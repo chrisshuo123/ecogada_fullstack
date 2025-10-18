@@ -43,6 +43,11 @@ list kategori produk, kondisi (baru, bekas), PreOrder (iya
 / tidak), status, dan pengiriman (yg ini m:n) */
 
 /* 1. Create table Produk */
+/* Yang seharusnya Null:
+idBrand_fkProduk, idKategoriProduk_fkProduk, deskripsi,
+hargaAwal, hargaAkhir, stok, idKondisi_fkProduk, berat,
+PreOrder, dan Status.
+Sementara diset Boleh Null dulu. */
 CREATE TABLE produk (
     idProduk int(10) primary key auto_increment,
     tglRegistrasi timestamp not null default current_timestamp,
@@ -84,12 +89,21 @@ alter table produk
     ADD CONSTRAINT idStatus_fkProduk FOREIGN KEY (idStatus_fkProduk)
     REFERENCES status (idStatus);
 
-/* Pembuatan Foreign Key Constraint */
-/*alter table produk
-	ADD CONSTRAINT idProfil_fkPerusahaan FOREIGN KEY (idProfil_fkPerusahaan)
-	REFERENCES profil (idProfil),
-    ADD CONSTRAINT idProduk_fkPerusahaan FOREIGN KEY (idProduk_fkPerusahaan)
-	REFERENCES produk (idProduk);*/
+/* Set Tabel Produk Not Null to Null untuk sementara waktu */
+/* idBrand_fkProduk, idKategoriProduk_fkProduk, deskripsi,
+hargaAwal, hargaAkhir, stok, idKondisi_fkProduk, berat,
+PreOrder, dan Status. */
+alter table produk
+modify idBrand_fkProduk int(10) NULL,
+modify idKategoriProduk_fkProduk int(10) NULL,
+modify deskripsi TEXT NULL,
+modify hargaAwal int(10) NULL,
+modify hargaAkhir int(10) NULL,
+modify stok int(10) NULL,
+modify idKondisi_fkProduk int(10) NULL,
+modify berat double(10,2) NULL,
+modify idPreOrder_fkProduk int(10) NULL,
+modify idStatus_fkProduk int(10) NULL;
 
 select * from produk;
 describe produk;
