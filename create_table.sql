@@ -38,6 +38,15 @@ rename column idProduk_fk to idProduk_fkStrategicPartnership;
 
 select * from strategic_partnership;
 
+/* Add FK Key for the table strategic_partnership */
+alter table strategic_partnership
+    ADD CONSTRAINT idUser_fkStrategicPartnership FOREIGN KEY (idUser_fkStrategicPartnership)
+    REFERENCES user (idUser),
+    ADD CONSTRAINT idProfilKerjasama_fkStrategicPartnership FOREIGN KEY (idProfilKerjasama_fkStrategicPartnership)
+    REFERENCES profil_kerjasama (idProfilKerjasama),
+    ADD CONSTRAINT idProduk_fkStrategicPartnership FOREIGN KEY (idProduk_fkStrategicPartnership)
+    REFERENCES produk (idProduk);
+
 /* ====================== */
 /* = 2 - Table Produk == */
 /* ====================== */
