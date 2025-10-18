@@ -30,6 +30,11 @@ CREATE TABLE strategic_partnership (
     idProfilKerjasama_fk int(10),
     idProduk_fk int(10)
 );
+/* Alter fk name by adding the last with the table name */
+alter table strategic_partnership
+rename column idUser_fk to idUser_fkStrategicPartnership,
+rename column idProfilKerjasama_fk to idProfilKerjasama_fkStrategicPartnership,
+rename column idProduk_fk to idProduk_fkStrategicPartnership;
 
 select * from strategic_partnership;
 
@@ -74,6 +79,21 @@ alter table produk
     rename column idKondisi_fk to idKondisi_fkProduk,
     rename column idPO_fk to idPreOrder_fkProduk,
     rename column idStatus_fk to idStatus_fkProduk;
+/* tglRegistrasi diregister secara manual, sdgkan
+tglInput diupdate setelah kita progreskan informasi */
+alter table produk
+    rename column tglRegistrasi to tglInput;
+alter table produk
+    add column tglRegistrasi timestamp not null default current_timestamp after idProduk;
+/* Menggeserkan tglRegistrasi kekanan after tglInput: */
+alter table produk
+    modify column tglRegistrasi DATE after tglInput;
+/* Lupa rename idStatus_fkProduk ke idStatusProduk_fkProduk */
+alter table produk 
+    rename column idStatus_fkProduk to idStatusProduk_fkProduk;
+/* Lupa memberi kolom 'namaProduk' */
+alter table produk
+    add column namaProduk varchar(100) not null after tglRegistrasi;
 
 /* Add Constraint on FK column in table 'produk' After finish 
 creating additional tables */
