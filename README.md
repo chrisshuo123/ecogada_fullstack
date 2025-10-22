@@ -1,5 +1,5 @@
 ## 🚧 Self Project: [Ecogada Fullstack]
-**Status:** In Progress -  , ongoing Inventory Admin Panel Creation
+**Status:** In Progress -  , ongoing Inventory Admin Panel Creation<br><br>
 **What's Completed:**
 - ✅ MySQL Table creation & FK integration _(partially complete)_
 - ✅ Basic data query _(partially complete)_<br><br>
