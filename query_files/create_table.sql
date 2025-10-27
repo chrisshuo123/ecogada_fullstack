@@ -10,6 +10,18 @@ CREATE TABLE user (
     tglRegistrasi timestamp not null default current_timestamp,
     namaUser varchar(100) not null
 );
+/* Rubah namaUser menjadi username */
+alter table user
+rename column namaUser to username;
+/* Tambah column NamaDepan dan NamaBelakang setelah tglRegistrasi
+dan password setelah namaUser */
+alter table user
+add column namaDepan varchar(100) not null after tglRegistrasi,
+add column namaBelakang varchar(100) not null after namaDepan,
+add column password char(60) after username;
+/* Sama tambah column email */
+alter table user
+add column email varchar(255) unique not null after namaBelakang;
 
 select * from user;
 
