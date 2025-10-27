@@ -1,1 +1,5 @@
 struktur tabel inventory list produk.txt
+public/css/*
+public/js/*
+!public/css/bootstrap.css
+!public/js/bootstrap.js
