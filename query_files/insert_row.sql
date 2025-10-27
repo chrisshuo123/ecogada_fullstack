@@ -1,8 +1,14 @@
 use ecogada;
 
 /* 1. Insert User (untuk sebatas nama depan dulu) */
-insert into user(namaUser)
+insert into user(namaUser) /* rename jadi username */
 values ("Melani");
+/* sekalian insert namaDepan, namaBelakang. Password
+sengaja dibiarkan null dulu */
+update user
+SET namaDepan = "Melani",
+    namaBelakang = "Pranawa"
+WHERE idUser = 1;
 
 select * from user;
 
