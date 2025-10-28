@@ -5,3 +5,4 @@ public/js/*
 !public/css/navbar.css
 !public/css/style.css
 !public/js/bootstrap.js
+!public/js/navbar.js
