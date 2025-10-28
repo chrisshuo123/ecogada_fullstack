@@ -1,0 +1,249 @@
+/* Navbar Size */
+.fixed-navbar .container-fluid div ul a {
+    font-size: 1.1rem;
+}
+
+.navbar-nav li a {
+    margin-top: 12px;
+    margin-right: 10px;
+}
+
+/* === 1 - DROPDOWN === */
+/* Adjust dropdown for submenu */
+header {
+    position:fixed;
+    top: 0;
+    left: 0;
+    width: 100%; /* Stretch navbar across the width */
+    z-index: 100;
+}
+
+.dropdown-submenu {
+    position: relative;
+}
+.dropdown-submenu .dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-top: -0.1rem;
+}
+.dropdown-submenu.show .dropdown-menu {
+    display: block;
+}
+/* Adjust dropdown arrow alignment */
+.dropdown-toggle::after {
+    margin-left: 0.5rem;
+}
+
+/* Ensure dropdowns work in burger mode */
+.navbar-collapse.show {
+    display: block !important;
+}
+
+.navbar .dropdown-menu {
+    display: none;
+}
+
+.navbar .dropdown.show > .dropdown-menu {
+    display: block;
+}
+
+/* Base Dropdown Menu Styling */
+.dropdown-menu {
+    display: none;
+}
+
+  /* Show Dropdown for Hover and Click */
+.dropdown.show > .dropdown-menu {
+    display: block;
+}
+
+  /* Adjust for Mobile Screens */
+.navbar-collapse.show {
+    display: block !important;
+}
+
+@media (max-width: 991.98px) {
+    .dropdown-menu {
+      position: static; /* Ensure proper positioning in mobile view */
+    }
+}
+
+/*.collapse:not(.show) {
+    display: none !important;
+}*/
+.collapse {
+    display: none !important;
+}
+
+/* Adjusting the margin-bottom distance for the no-dropdown navbar button */
+.navbar-collapse .navbar-nav .no-dropdown a {
+    margin-bottom: 1.5%;
+}
+
+/* -- Ensure that your submenu visibility is managed by CSS: -- */
+/* Submenu is hidden by default */
+.navbar .dropdown-menu {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Show submenu when 'show' class is added */
+.navbar .dropdown-menu.show {
+    display: block;
+    opacity: 1;
+}
+
+/* Sub-sub-menu specific styling */
+.dropdown-submenu .dropdown-menu {
+    top: 0;
+    left: 100%; /* Position it to the right of the parent menu */
+    margin-left: 0.1rem; /* Adjust spacing */
+}
+
+/* Reset hover behavior for desktop */
+@media screen and (min-width: 900px) {
+    .navbar .dropdown:hover > .dropdown-menu {
+        display: block;
+        opacity: 1;
+    }
+
+    .navbar .dropdown .dropdown-menu {
+        display: none;
+        opacity: 0;
+    }
+
+    .dropdown-submenu:hover > .dropdown-menu {
+        display: block;
+        opacity: 1;
+    }
+}
+
+/* Styles for class .dropdown-submenu-menu */
+/*.dropdown-submenu-menu {
+    margin-left: 15px; /* Indent for distinction */
+    /*padding: 0;
+    list-style: none;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+}*/
+
+/* === 2 - SCROLLBAR === */
+/* Give scrollbar when height of navbar (in toggle mode) exceeds 600px height */
+/* Apply scrollbar styling for the navbar menu */
+@media screen and (max-width: 992px) {
+    .navbar-collapse {
+        max-height: 300px; /* Maximum height before scrollbar appears */
+        overflow-y: auto;  /* Enable vertical scrolling */
+    }
+    
+    /* Optional: Add custom scrollbar styles (for WebKit browsers) */
+    .navbar-collapse::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    .navbar-collapse::-webkit-scrollbar-thumb {
+        background-color: #ccc; /* Scrollbar color */
+        border-radius: 4px;     /* Rounded edges */
+    }
+    
+    .navbar-collapse::-webkit-scrollbar-thumb:hover {
+        background-color: #999; /* Darker on hover */
+    }
+}
+
+/* === 3 - ANIMATIONS === */
+/* CUSTOM ANIMATIONS FOR ALL MENUS */
+/* Animation for main menu dropdown */
+.navbar .dropdown-menu {
+    animation: fadeInDown 0.3s ease-in-out;
+}
+
+/* Animation for sub-menu dropdown */
+.navbar .dropdown-menu .dropdown-menu {
+    animation: fadeInLeft 0.3s ease-in-out;
+}
+
+/* Keyframes for fade and slide animations */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* === DECORATIONS & COLORING === */
+/* Give color for the main background menu */
+.bg-custom {
+    background-color: rgb(75, 141, 240);
+}
+.bg-custom div ul li a {
+    color: rgb(232, 227, 227);
+}
+
+/* Give BG Color for the sub-menu */
+.dropdown-menu {
+    background-color: rgb(75, 141, 240);
+}
+.dropdown-menu li a:hover {
+    color: #fff;
+    background-color: rgb(54, 114, 203);
+}
+/* Give BG Color for the sub-sub-menu */
+.dropdown-submenu .dropdown-menu {
+    background-color: rgb(43, 95, 173);
+}
+.dropdown-submenu .dropdown-menu li a:hover {
+    color: #fff;
+    background-color: rgb(31, 74, 137);
+}
+
+/* Make the "Selected" Navbar appear more Active (override from the scss) */
+/* For the navbar tagged ".active" */
+.show > .nav-link,
+.nav-link.active {
+    color: white !important;
+    font-style: bold !important;
+}
+/* And also its sub-menu */
+.dropdown-item.active, .dropdown-item:active {
+    background-color: rgb(31, 74, 137);
+}
+/* + the Sub-sub-menu (blackbelt list) */
+/* (Belum ditemukan) */
+
+
+/* Give colors for the navbar toggler icon button */
+/* Style the navbar toggler icon */
+.navbar-toggler {
+    border-color: #ffffff; /* White border for the toggler button */
+}
+
+.navbar-toggler .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba(255, 255, 255, 1)' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+    /* This SVG generates the white stripes for the toggler icon */
+}
+
+/* Add a soft shadow effect on hover for the navbar toggler */
+.navbar-toggler {
+    transition: box-shadow 0.3s ease-in-out; /* Smooth transition for shadow */
+}
+
+.navbar-toggler:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Soft, subtle shadow */
+}
