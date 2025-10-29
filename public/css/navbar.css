@@ -114,8 +114,19 @@ header {
     }
 
     .dropdown-submenu:hover > .dropdown-menu {
-        display: block;
+        display: block !important;
         opacity: 1;
+    }
+}
+
+/* Mobile styles untuk dropdown-submenu */
+@media (min-width: 900px) {
+    .dropdown-submenu > .dropdown-menu {
+        display: none !important;
+    }
+    
+    .dropdown-submenu.show > .dropdown-menu {
+        display: block !important;
     }
 }
 
