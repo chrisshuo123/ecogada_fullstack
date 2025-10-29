@@ -3,6 +3,8 @@ public/css/*
 public/js/*
 !public/css/bootstrap.css
 !public/css/navbar.css
+!public/css/navbar2.css
 !public/css/style.css
 !public/js/bootstrap.js
 !public/js/navbar.js
+!public/js/navbar2.js
