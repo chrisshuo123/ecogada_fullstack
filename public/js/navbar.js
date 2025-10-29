@@ -5,45 +5,68 @@ function isNavbarCollapsed() {
 }
 
 // Toggle Sub-menu on Click
-document.querySelectorAll(".dropdown-submenu > .dropdown-item").forEach(function (submenu) {
-    submenu.addEventListener('click', function (e) {
-        e.preventDefault;
-        e.stopPropagation(); // Prevent parent dropdown from closing
-        this.parentElement.classList.toggle("show");
+document.querySelectorAll(".dropdown-submenu > a").forEach(function (submenuLink) {
+    submenuLink.addEventListener('click', function (e) {
+        if (isNavbarCollapsed()) { // Only in mobile view
+            e.preventDefault();
+            e.stopPropagation(); // Prevent parent dropdown from closing
+
+            const parentSubmenu = this.parentElement;
+            const isCurrentlyOpen = parentSubmenu.classList.contains("show");
+
+            // If clicking the same submenu that's already open, close it
+            if(isCurrentlyOpen) {
+                parentSubmenu.classList.remove("show");
+            } else {
+                // Close other open submenus
+                document.querySelectorAll(".dropdown-submenu.show").forEach(function (openSubmenu) {
+                    if(openSubmenu !== parentSubmenu) {
+                        openSubmenu.classList.remove("show");
+                    }
+                });
+
+                // Open the current submenu
+                parentSubmenu.classList.add("show");
+            }
+        }
     });
 });
 
 // Close all submenus if clicked elsewhere
 document.addEventListener('click', function() {
-    document.querySelector('dropdown-submenu').foreach(function (submenu) {
+    document.querySelectorAll('dropdown-submenu').foreach(function (submenu) {
         submenu.classList.remove("show");
     });
 });
 
-// Hover effect when mouse went over the navbar menu, sub-menu, and the sub-sub-menu
-// + Handle hover for dropdowns
-document.querySelectorAll(".navbar .dropdown").forEach(function (dropdown) {
-    dropdown.addEventListener('mouseover', function () {
-        this.classList.add("show"); // Add 'show' class on hover
-        this.querySelector(".dropdown-menu").classList.add("show");
+// Hover effect for desktop only
+function setupHoverEffects() {
+    // Remove all existing hover events first
+    document.querySelectorAll(".navbar .dropdown, .dropdown-submenu").forEach(function (element) {
+        // Clone and replace to remove event listeners
+        const newElement = element.cloneNode(true);
+        element.parentNode.replaceChild(newElement, element);
     });
-    dropdown.addEventListener('mouseout', function () {
-        this.classList.remove("show"); // Remove 'show' class when not hovered
-        this.querySelector(".dropdown-menu").classList.remove("show");
-    });
+    
+    if (window.innerWidth > 900) { // Desktop only
+        document.querySelectorAll(".navbar .dropdown, .dropdown-submenu").forEach(function (element) {
+            element.addEventListener('mouseover', function () {
+                this.classList.add("show");
+                const menu = this.querySelector(".dropdown-menu");
+                if (menu) menu.classList.add("show");
+            });
+            element.addEventListener('mouseout', function () {
+                this.classList.remove("show");
+                const menu = this.querySelector(".dropdown-menu");
+                if (menu) menu.classList.remove("show");
+            });
+        });
+    }
+}
 
-    // And here is for the dropdown-submenu:
-    document.querySelectorAll(".dropdown-submenu").forEach(function(subdropdown) {
-        subdropdown.addEventListener('mouseover', function() {
-            this.classList.add("show");
-            this.querySelector("#blackbeltlist").classList.add("show");
-        });
-        subdropdown.addEventListener('mouseout', function() {
-            this.classList.remove("show");
-            this.querySelector("#blackbeltlist").classList.remove("show");
-        });
-    });
-});
+// Initialize hover effects and re-initialize on resize
+setupHoverEffects();
+window.addEventListener('resize', setupHoverEffects);
 
 // === FIX THE TOGGLE BEHAVIOUR ===
 // == 1 - Recently there's a problem when disabling the toggle navbar, when implementing in this shidokan web ==
@@ -55,18 +78,26 @@ document.querySelectorAll(".navbar .dropdown > a").forEach(function (dropdownLin
             e.preventDefault(); // Prevent default link behavior
             
             const parentDropdown = this.parentElement;
+            const dropdownMenu = parentDropdown.querySelector(".dropdown-menu");
+            const isCurrentlyOpen = parentDropdown.classList.contains("show");
 
-            // Close any open dropdowns except the current one
-            document.querySelectorAll(".navbar .dropdown.show").forEach(function (openDropdown) {
-                if(openDropdown !== parentDropdown) {
-                    openDropdown.classList.remove("show");
-                    openDropdown.querySelector(".dropdown-menu").classList.remove("show");
-                }
-            });
+            // If clicking the same dropdown that's already open, close it
+            if(isCurrentlyOpen) {
+                parentDropdown.classList.remove("show");
+                dropdownMenu.classList.remove("show");
+            } else {
+                // Close any open dropdowns except the current one
+                document.querySelectorAll(".navbar .dropdown.show").forEach(function (openDropdown) {
+                    if(openDropdown !== parentDropdown) {
+                        openDropdown.classList.remove("show");
+                        openDropdown.querySelector(".dropdown-menu").classList.remove("show");
+                    }
+                });
+            }
 
-            // Toggle the current dropdown menu
-            parentDropdown.classList.toggle("show");
-            parentDropdown.querySelector(".dropdown-menu").classList.toggle("show");
+            // Open the current dropdown menu
+            parentDropdown.classList.add("show");
+            dropdownMenu.classList.add("show");
         }
     });
 });
@@ -156,52 +187,6 @@ document.querySelectorAll(".navbar .dropdown > a").forEach(function (dropdownLin
             dropdownMenu.classList.toggle("show", !isOpen);
             parentDropdown.classList.toggle("show", !isOpen);
         }
-    });
-});
-
-// Handle click for sub-sub-menus in mobile view
-/*document.querySelectorAll(".dropdown-submenu > a").forEach(function (submenuLink) {
-    submenuLink.addEventListener("click", function (e) {
-        if (window.innerWidth <= 900) { // Mobile view
-            e.preventDefault(); // Prevent default link behavior
-            const parentSubmenu = this.parentElement;
-            const submenuMenu = parentSubmenu.querySelector(".dropdown-menu");
-
-            if (parentSubmenu.classList.contains("show")) {
-                // Close the current sub-sub-menu
-                parentSubmenu.classList.remove("show");
-                submenuMenu.classList.remove("show");
-            } else {
-                // Close other open sub-sub-menus
-                document.querySelectorAll(".dropdown-submenu.show").forEach(function (openSubmenu) {
-                    openSubmenu.classList.remove("show");
-                    openSubmenu.querySelector(".dropdown-menu").classList.remove("show");
-                });
-
-                // Open the clicked sub-sub-menu
-                parentSubmenu.classList.add("show");
-                submenuMenu.classList.add("show");
-            }
-        }
-    });
-});*/
-document.querySelectorAll(".dropdown-submenu > a").forEach(function (submenuLink) {
-    submenuLink.addEventListener("click", function (e) {
-        e.preventDefault();
-
-        const submenuMenu = this.nextElementSibling; // Get the child menu with the new class
-        const isSubmenuOpen = submenuMenu.classList.contains("show");
-
-        // Close all open sub-sub-menus
-        document.querySelectorAll(".dropdown-submenu .dropdown-submenu-menu.show").forEach(function (openMenu) {
-            openMenu.classList.remove("show");
-        });
-
-        // Toggle the current sub-sub-menu
-        submenuMenu.classList.toggle("show", !isSubmenuOpen);
-
-        // Prevent parent menu from closing
-        e.stopPropagation();
     });
 });
 
