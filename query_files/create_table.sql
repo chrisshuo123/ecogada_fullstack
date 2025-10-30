@@ -276,6 +276,13 @@ create table layanan_ekspedisi(
 );
 select * from layanan_ekspedisi;
 
+-- Pasang Constraint FK bagi table layanan_ekspedisi
+alter table layanan_ekspedisi
+    ADD CONSTRAINT idProduk_fkLayananEkspedisi FOREIGN KEY (idProduk_fkLayananEkspedisi)
+    REFERENCES produk(idProduk),
+    ADD CONSTRAINT idEkspedisi_fkLayananEkspedisi FOREIGN KEY (idEkspedisi_fkLayananEkspedisi)
+    REFERENCES ekspedisi(idEkspedisi);
+
 /* ============================ */
 /* = 3 - Table MP Management == */
 /* ============================ */
