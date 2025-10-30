@@ -8,6 +8,7 @@ class User extends Controller {
         $data['email'] = $email;
         $data['username'] = $username;
         $data['password'] = $password;
+        $data['user'] = $this->model('User_model')->getAllUser();
         echo "User/index";
         $this->view('templates/header', $data);
         $this->view('user/index', $data);
