@@ -8,3 +8,4 @@ public/js/*
 !public/js/bootstrap.js
 !public/js/navbar.js
 !public/js/navbar2.js
+query_files/user_database.csv
