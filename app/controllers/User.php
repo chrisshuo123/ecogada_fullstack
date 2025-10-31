@@ -14,6 +14,16 @@ class User extends Controller {
         $this->view('user/index', $data);
         $this->view('templates/footer');
     }
+
+    public function detail($idUser) {
+        $data['judul'] = 'Detail';
+        $data['user'] = $this->model('User_model')->getUserById($idUser);
+        echo "User/detail";
+        $this->view('templates/header', $data);
+        $this->view('user/detail',$data);
+        $this->view('templates/footer');
+    }
+
     public function register($namaDepan = "Melani", $namaBelakang = "Pranawa", $email = "melani@email.com", $username = "melani", $password = "melani") {
         $data['judul'] = 'Register';
         $data['namaDepan'] = $namaDepan;
