@@ -24,6 +24,13 @@ class User extends Controller {
         $this->view('templates/footer');
     }
 
+    public function tambah() {
+        if($this->model('User_model')->tambahDataUser($_POST) > 0) {
+            header('Location: ' . BASEURL . '/user');
+            exit;
+        }
+    }
+
     public function register($namaDepan = "Melani", $namaBelakang = "Pranawa", $email = "melani@email.com", $username = "melani", $password = "melani") {
         $data['judul'] = 'Register';
         $data['namaDepan'] = $namaDepan;
