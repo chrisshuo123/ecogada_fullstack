@@ -59,6 +59,26 @@ class User extends Controller {
         }
     }
 
+    public function getUbah() {
+        // $result = $this->model('User_model')->getUserById($_POST['idUser']);
+        // echo json_encode($result);
+        echo json_encode($this->model('User_model')->getUserById($_POST['id']));
+    }
+
+    public function ubah() {
+        if($this->model('User_model')->ubahDataUser($_POST) > 0) {
+            error_log("SUCCESS: Data Updated");
+            Flasher::setFlash('berhasil','diubah','success');
+            header('Location: ' . BASEURL . '/user');
+            exit;
+        } else {
+            error_log("FAILED: No rows updated");
+            Flasher::setFlash('gagal','diubah','danger');
+            header('Location: ' . BASEURL . '/user');
+            exit; 
+        }
+    }
+
     public function register($namaDepan = "Melani", $namaBelakang = "Pranawa", $email = "melani@email.com", $username = "melani", $password = "melani") {
         $data['judul'] = 'Register';
         $data['namaDepan'] = $namaDepan;
