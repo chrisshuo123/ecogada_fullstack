@@ -10,7 +10,7 @@
 
     <p>Halo, nama saya <?= $data['namaDepan']; ?> <?= $data['namaBelakang']; ?> dengan username <?= $data['username']; ?>.  Saya memiliki password <?= $data['password']; ?> saya adalah seorang admin inti dari Ecogada Fullstack</p>
     <h2>List User Merchant EcoGada Goods</h2>
-    <button type="button" class="btn btn-primary" style="margin: 1.5% 0 1.5% 0;" data-bs-toggle="modal" data-bs-target="#formModal">
+    <button type="button" class="btn btn-primary tombolTambahData" style="margin: 1.5% 0 1.5% 0;" data-bs-toggle="modal" data-bs-target="#formModal">
         Tambah User Merchant
     </button>
     <table class="table">
@@ -33,7 +33,7 @@
                     <td scope="col"><?= $user['username']; ?></td>
                     <td>
                         <a href="<?= BASEURL; ?>/user/detail/<?= $user['idUser']; ?>"><span class="badge text-bg-primary">Detail</span></a>
-                        <a><span class="badge text-bg-warning">Ubah</span></a>
+                        <a href="<?= BASEURL ?>/user/ubah/<?= $user['idUser']; ?>" class="tampilModalUbah" data-bs-toggle="modal" data-bs-target="#formModal" data-id="<?= $user['idUser']; ?>"><span class="badge text-bg-warning">Ubah</span></a>
                         <a href="<?= BASEURL; ?>/user/hapus/<?= $user['idUser']; ?>"><span class="badge text-bg-danger" onclick="return confirm('Yakin mau hapus baris No <?= $rowCount-1 ?> ini?')">Hapus</span></a>
                     </td>
                 </tr>
@@ -43,15 +43,16 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="formModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="formModal" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="judulModalLabel" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Tambah Data User</h5>
+                <h5 class="modal-title" id="judulModalLabel">Tambah Data User Merchant</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form action="<?= BASEURL; ?>/user/tambah" method="POST">
+                    <input type="hidden" name="id" id="id">
                     <!-- Nama Depan -->
                     <div class="mb-3">
                         <label for="namaDepan" class="form-label">Nama Depan</label>
@@ -81,7 +82,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                <button type="submit" class="btn btn-primary">Tambah Data</button>
+                <button type="submit" class="btn btn-primary" id="tombolData">Tambah Data</button>
                 </form>
             </div>
         </div>
