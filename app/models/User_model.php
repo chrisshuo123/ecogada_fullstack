@@ -1,23 +1,18 @@
 <?php
 
 class User_model {
-    private $dbh;
-    private $stmt;
+    private $table = 'user';
+    private $db;
 
     public function __construct() {
-        // Data Source Handler
-        $dsn = 'mysql:host=localhost:3307;dbname=ecogada';
-
-        try {
-            $this->dbh = new PDO($dsn, 'root', '');
-        } catch(PDOException $e) {
-            die($e->getMessage());
-        }
+        $this->db = new Database;
     }
 
     public function getAllUser() {
-        $this->stmt = $this->dbh->prepare('SELECT * FROM user');
-        $this->stmt->execute();
-        return $this->stmt->fetchAll(PDO::FETCH_ASSOC);
+        // stmt, dbh, prepare, execute, fetch sudah dilakukan di DB Wrapper core/Database.php
+        // Jadi tinggal panggil saja dari Database class, lalu method query() didalamnya.
+        // Didalam query(), jalankan parameternya pakai DL.
+        $this->db->query('SELECT * FROM ' . $this->table);
+        return $this->db->resultSet(); // Mengembalikan "semua" datanya
     }
 }
