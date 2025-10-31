@@ -1,7 +1,7 @@
 <div class="container mt-5">
     <div class="card" style="width: 18rem;">
         <div class="card-body">
-            <h3 class="card-title">Detail <?= $data['user']['namaDepan']; ?> <?= $data['user']['namaBelakang']; ?></h3>
+            <h3 class="card-title" id="judulModalLabel">Detail <?= $data['user']['namaDepan']; ?> <?= $data['user']['namaBelakang']; ?></h3>
             <p class="card-text"><?= $data['user']['tglRegistrasi']; ?></p>
             <p class="card-text"><?= $data['user']['namaDepan']; ?></p>
             <p class="card-text"><?= $data['user']['namaBelakang']; ?></p>
