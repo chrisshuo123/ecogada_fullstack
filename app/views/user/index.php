@@ -1,5 +1,13 @@
 <div class="container margin-top-body">
+
+    <div class="row">
+        <div class="col-lg-6">
+            <?php Flasher::flash(); ?>
+        </div>
+    </div>
+
     <h1>User List Page</h1>
+
     <p>Halo, nama saya <?= $data['namaDepan']; ?> <?= $data['namaBelakang']; ?> dengan username <?= $data['username']; ?>.  Saya memiliki password <?= $data['password']; ?> saya adalah seorang admin inti dari Ecogada Fullstack</p>
     <h2>List User Merchant EcoGada Goods</h2>
     <button type="button" class="btn btn-primary" style="margin: 1.5% 0 1.5% 0;" data-bs-toggle="modal" data-bs-target="#formModal">
