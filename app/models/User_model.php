@@ -24,18 +24,27 @@ class User_model {
 
     public function tambahDataUser($data) {
         $query = "INSERT INTO user
-                VALUES
-                    ('', :tglRegistrasi, :namaDepan, :namaBelakang, :email, :username, :password)";
+            VALUES
+                ('', :tglRegistrasi, :namaDepan, :namaBelakang, :email, :username, :password)";
         $this->db->query($query);
         $this->db->bind(':tglRegistrasi', $data['tglRegistrasi']);
         $this->db->bind(':namaDepan', $data['namaDepan']);
         $this->db->bind(':namaBelakang', $data['namaBelakang']);
         $this->db->bind(':email', $data['email']);
         $this->db->bind(':username', $data['username']);
-        $this->db->bind(':password', $data['password']);
+        $this->db->bind(':password', password_hash($data['password'], PASSWORD_DEFAULT));
 
         $this->db->execute();
 
         return $this->db->rowCount();
+    }
+
+    // Check if email exists (optional)
+    public function cekEmailExists($email) {
+        $query = "SELECT * FROM " . $this->table . " WHERE email = :email";
+        $this->db->query($query);
+        $this->db->bind(':email', $email);
+        $result = $this->db->single();
+        return $result['count'] > 0;
     }
 }
