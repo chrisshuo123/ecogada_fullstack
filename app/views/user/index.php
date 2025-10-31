@@ -34,7 +34,7 @@
                     <td>
                         <a href="<?= BASEURL; ?>/user/detail/<?= $user['idUser']; ?>"><span class="badge text-bg-primary">Detail</span></a>
                         <a><span class="badge text-bg-warning">Ubah</span></a>
-                        <a><span class="badge text-bg-danger">Hapus</span></a>
+                        <a href="<?= BASEURL; ?>/user/hapus/<?= $user['idUser']; ?>"><span class="badge text-bg-danger" onclick="return confirm('Yakin mau hapus baris No <?= $rowCount-1 ?> ini?')">Hapus</span></a>
                     </td>
                 </tr>
             <?php endforeach; ?>
