@@ -25,10 +25,27 @@ class User extends Controller {
     }
 
     public function tambah() {
-        if($this->model('User_model')->tambahDataUser($_POST) > 0) {
+        try {
+            if($this->model('User_model')->tambahDataUser($_POST) > 0) {
+                Flasher::setFlash('berhasil', 'ditambahkan', 'success');
+                header('Location: ' . BASEURL . '/user');
+                exit;
+            } else {
+                Flasher::setFlash('gagal', 'ditambahkan', 'danger');
+                header('Location: ' . BASEURL . '/user');
+                exit;
+            }
+        } catch(PDOException $e) {
+            // Check if it's a duplicate entry error (code 23000 and 1062)
+            if($e->getCode() == '23000' && strpos($e->getMessage(), '1062') != false) {
+                Flasher::setFlash('gagal', 'ditambahkan - Email sudah Terdaftar!', 'danger');
+            } else {
+                Flasher::setFlash('gagal', 'ditambahkan - Update DB Failed', 'danger');
+            }
             header('Location: ' . BASEURL . '/user');
             exit;
         }
+        
     }
 
     public function register($namaDepan = "Melani", $namaBelakang = "Pranawa", $email = "melani@email.com", $username = "melani", $password = "melani") {
