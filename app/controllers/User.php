@@ -45,7 +45,18 @@ class User extends Controller {
             header('Location: ' . BASEURL . '/user');
             exit;
         }
-        
+    }
+
+    public function hapus($idUser) {
+        if ($this->model('User_model')->hapusDataUser($idUser) > 0) {
+            Flasher::setFlash('berhasil','dihapus','success');
+            header('Location: ' . BASEURL . '/user');
+            exit;
+        } else {
+            Flasher::setFlash('gagal','dihapus','danger');
+            header('Location: ' . BASEURL . '/user');
+            exit;
+        }
     }
 
     public function register($namaDepan = "Melani", $namaBelakang = "Pranawa", $email = "melani@email.com", $username = "melani", $password = "melani") {
