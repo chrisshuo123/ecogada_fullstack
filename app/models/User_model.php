@@ -47,4 +47,14 @@ class User_model {
         $result = $this->db->single();
         return $result['count'] > 0;
     }
+
+    public function hapusDataUser($idUser) {
+        $query = "DELETE FROM " . $this->table . " WHERE idUser = :idUser";
+        $this->db->query($query);
+        $this->db->bind(':idUser', $idUser);
+
+        $this->db->execute();
+
+        return $this->db->rowCount();
+    }
 }
