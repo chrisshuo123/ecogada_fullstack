@@ -40,6 +40,10 @@
                         <li><a class="dropdown-item" href="<?= BASEURL; ?>/user/login">&nbsp;Login</a></li>
                     </ul>
                     </li>
+                    <!-- Ekspedisi -->
+                    <li class="nav-item no-dropdown">
+                    <a class="nav-link active" aria-current="page" href="<?= BASEURL; ?>/ekspedisi/index">Ekspedisi</a>
+                    </li>
                     <!-- Contoh #1 -->
                     <li class="nav-item dropdown">      <!-- id aboutDropdown changed to thirdDropdown -->
                         <a class="nav-link dropdown-toggle" href="#" id="contohDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
