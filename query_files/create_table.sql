@@ -258,12 +258,22 @@ alter table ekspedisi
 select * from ekspedisi;
 describe ekspedisi;
 
+-- Drop constraint idJenisEkspedisi_fkEkspedisi, we refine table layanan_ekspedisi to integrate ekspedisi and jenis ekspedisi into one.
+alter table ekspedisi
+    DROP CONSTRAINT idJenisEkspedisi_fkEkspedisi;
+alter table ekspedisi
+    drop column idJenisEkspedisi_fkEkspedisi;
+
 /* 6.2. Table Jenis Ekspedisi */
 create table jenis_ekspedisi(
     idJenisEkspedisi int(10) primary key auto_increment,
     tglInput timestamp not null default current_timestamp,
     jenisEkspedisi varchar(100) not null
 );
+
+-- Add 'deskripsi' column after column 'jenisEkspedisi' 
+alter table jenis_ekspedisi
+    add column deskripsi TEXT after jenisEkspedisi;
 
 select * from jenis_ekspedisi;
 
@@ -282,6 +292,23 @@ alter table layanan_ekspedisi
     REFERENCES produk(idProduk),
     ADD CONSTRAINT idEkspedisi_fkLayananEkspedisi FOREIGN KEY (idEkspedisi_fkLayananEkspedisi)
     REFERENCES ekspedisi(idEkspedisi);
+
+-- Drop constraint idProduk_fkLayananEkspedisi terlebih dahulu, akan dibuatkan pada Table tersendiri
+alter table layanan_ekspedisi
+    DROP CONSTRAINT idProduk_fkLayananEkspedisi;
+
+alter table layanan_ekspedisi
+    drop column idProduk_fkLayananEkspedisi;
+alter table layanan_ekspedisi
+    add column idJenisEkspedisi_fkLayananEkspedisi int(10) after idEkspedisi_fkLayananEkspedisi;
+
+alter table layanan_ekspedisi
+    ADD CONSTRAINT idJenisEkspedisi_fkLayananEkspedisi FOREIGN KEY (idJenisEkspedisi_fkLayananEkspedisi)
+    REFERENCES jenis_ekspedisi(idJenisEkspedisi);
+
+select * from layanan_ekspedisi;
+describe layanan_ekspedisi;
+select * from jenis_ekspedisi;
 
 /* ============================ */
 /* = 3 - Table MP Management == */
