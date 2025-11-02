@@ -10,3 +10,6 @@ public/js/*
 !public/js/navbar2.js
 !public/js/script.js
 query_files/user_database.csv
+query_files/jenisEkspedisi_database.csv
+query_files/layananEkspedisi_database.csv
+query_files/ekspedisi_database.csv
