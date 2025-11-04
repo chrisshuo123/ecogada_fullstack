@@ -2,4 +2,14 @@ struktur tabel inventory list produk.txt
 public/css/*
 public/js/*
 !public/css/bootstrap.css
+!public/css/navbar.css
+!public/css/navbar2.css
+!public/css/style.css
 !public/js/bootstrap.js
+!public/js/navbar.js
+!public/js/navbar2.js
+!public/js/script.js
+query_files/user_database.csv
+query_files/jenisEkspedisi_database.csv
+query_files/layananEkspedisi_database.csv
+query_files/ekspedisi_database.csv

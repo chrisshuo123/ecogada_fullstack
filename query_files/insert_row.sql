@@ -10,7 +10,35 @@ SET namaDepan = "Melani",
     namaBelakang = "Pranawa"
 WHERE idUser = 1;
 
+-- Insert 5 user lagi sebagai simulasi (NOTE: Passwordnya hash simulasi, bukan yg bcrypt):
+insert into user(tglRegistrasi, namaDepan, namaBelakang, email, username, password)
+    values
+    ('2024-01-15 09:30:25', 'Ahmad', 'Fauzi', 'ahmad.fauzi@gmail.com', 'ahmadf', 'hashed_password_123');
+insert into user(tglRegistrasi, namaDepan, namaBelakang, email, username, password)
+    values
+    ('2024-02-03 14:45:10', 'Siti', 'Rahayu', 'siti.rahayu@email.com', 'siti_r', 'secure_pass_456'),
+    ('2024-02-20 11:20:35', 'Budi', 'Santoso', 'budi.santoso@email.com', 'budis', 'encrypted_pass_789'),
+    ('2024-03-05 16:10:50', 'Maya', 'Wulandari', 'maya.wulan@email.com', 'mayaw', 'hashed_pass_012'),
+    ('2024-03-12 08:55:15', 'Rizki', 'Pratama', 'rizki.pratama@email.com', 'rizkip', 'secure_hash_345');
+
 select * from user;
+describe user;
+
+/* Create Index for table User that shows username (self learning): */
+CREATE INDEX idx_username_list ON user(username);
+SHOW INDEX FROM user;
+-- or
+SHOW INDEX FROM user FROM ecogada;
+/* To see just index names and column (clean view): */
+SELECT 
+    INDEX_NAME as 'Index Name',
+    GROUP_CONCAT(COLUMN_NAME ORDER BY SEQ_IN_INDEX) as 'Columns',
+    CASE WHEN NON_UNIQUE = 0 THEN 'Yes' ELSE 'No' END as 'Unique'
+FROM information_schema.STATISTICS 
+WHERE TABLE_SCHEMA = 'ecogada' 
+AND TABLE_NAME = 'user'
+GROUP BY INDEX_NAME, NON_UNIQUE
+ORDER BY INDEX_NAME;
 
 /* 2. Insert Brand (baru yang punya Melani dulu) */
 insert into brand(brand)
