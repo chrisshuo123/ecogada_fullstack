@@ -1,5 +1,4 @@
 <div class="container">
-    <p>Hello World!</p>
     <h1>Detail Ekspedisi <?= $data['judul_ekspedisi']; ?></h1>
 
     <?php if(!empty($data['jenisEkspedisi'])) : ?>
