@@ -67,11 +67,9 @@ class Ekspedisi_model {
 
     public function getJenisEkspedisi_By_IdEkspedisi($idEkspedisi) {
         $query = 'SELECT J.jenisEkspedisi, J.deskripsi
-            FROM layanan_ekspedisi as L
-            LEFT JOIN 
-                jenis_ekspedisi as J ON L.idJenisEkspedisi_fkLayananEkspedisi = J.idJenisEkspedisi
-            WHERE
-                L.idEkspedisi_fkLayananEkspedisi = :idEkspedisi
+            FROM layanan_ekspedisi L
+            JOIN jenis_ekspedisi J ON L.idJenisEkspedisi_fkLayananEkspedisi = J.idJenisEkspedisi
+            WHERE L.idEkspedisi_fkLayananEkspedisi = :idEkspedisi
         ';
 
         $this->db->query($query);
