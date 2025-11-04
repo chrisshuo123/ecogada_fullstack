@@ -16,6 +16,35 @@ update ekspedisi
 SET namaEkspedisi = "RPX"
 WHERE idEkspedisi = 10;
 
+-- Insert Image Ekspedisi (Updating the previous added Ekspedisi)
+update ekspedisi
+SET fotoEkspedisi = CASE
+    WHEN idEkspedisi = 1 THEN LOAD_FILE('C:/XAMPP/htdocs/ecogada_fullstack/public/img/1-jne-logo.jpg')
+    WHEN idEkspedisi = 2 THEN LOAD_FILE('C:/XAMPP/htdocs/ecogada_fullstack/public/img/2-tiki-logo.jpg')
+    WHEN idEkspedisi = 3 THEN LOAD_FILE('C:/XAMPP/htdocs/ecogada_fullstack/public/img/3-wahana-logo.jpg')
+    WHEN idEkspedisi = 4 THEN LOAD_FILE('C:/XAMPP/htdocs/ecogada_fullstack/public/img/4-jnt-express-logo.jpg')
+    WHEN idEkspedisi = 5 THEN LOAD_FILE('C:/XAMPP/htdocs/ecogada_fullstack/public/img/5-sicepat-express-logo.jpg')
+    WHEN idEkspedisi = 6 THEN LOAD_FILE('C:/XAMPP/htdocs/ecogada_fullstack/public/img/6-anteraja-logo.jpg')
+    WHEN idEkspedisi = 7 THEN LOAD_FILE('C:/XAMPP/htdocs/ecogada_fullstack/public/img/7-ninja-xpress-logo.jpg')
+    WHEN idEkspedisi = 8 THEN LOAD_FILE('C:/XAMPP/htdocs/ecogada_fullstack/public/img/8-pos-indonesia-logo.jpg')
+    WHEN idEkspedisi = 9 THEN LOAD_FILE('C:/XAMPP/htdocs/ecogada_fullstack/public/img/9-lionparcel-logo.jpg')
+    WHEN idEkspedisi = 10 THEN LOAD_FILE('C:/XAMPP/htdocs/ecogada_fullstack/public/img/10-RPX-logo.jpg')
+    WHEN idEkspedisi = 11 THEN LOAD_FILE('C:/XAMPP/htdocs/ecogada_fullstack/public/img/11-pahala-express-logo.jpg')
+    WHEN idEkspedisi = 12 THEN LOAD_FILE('C:/XAMPP/htdocs/ecogada_fullstack/public/img/12-SAP-Express-logo.jpg')
+    WHEN idEkspedisi = 13 THEN LOAD_FILE('C:/XAMPP/htdocs/ecogada_fullstack/public/img/13-Dakota-Kargo-Logo.jpg')
+    WHEN idEkspedisi = 14 THEN LOAD_FILE('C:/XAMPP/htdocs/ecogada_fullstack/public/img/14-id-express-logo.jpg')
+    WHEN idEkspedisi = 15 THEN LOAD_FILE('C:/XAMPP/htdocs/ecogada_fullstack/public/img/15-solusi-express-logo.jpg')
+    WHEN idEkspedisi = 16 THEN LOAD_FILE('C:/XAMPP/htdocs/ecogada_fullstack/public/img/16-JET-Express-Logo.jpg')
+    WHEN idEkspedisi = 17 THEN LOAD_FILE('C:/XAMPP/htdocs/ecogada_fullstack/public/img/17-borzo-logo.jpg')
+    WHEN idEkspedisi = 18 THEN LOAD_FILE('C:/XAMPP/htdocs/ecogada_fullstack/public/img/18-grab-express-logo.jpg')
+    WHEN idEkspedisi = 19 THEN LOAD_FILE('C:/XAMPP/htdocs/ecogada_fullstack/public/img/19-gosend-logo.jpg')
+    ELSE fotoEkspedisi
+END
+WHERE idEkspedisi IN (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19);
+
+SELECT LOAD_FILE('../public/img/1-jne-logo.png') AS test_load;
+
+
 select * from ekspedisi;
 describe ekspedisi;
 
