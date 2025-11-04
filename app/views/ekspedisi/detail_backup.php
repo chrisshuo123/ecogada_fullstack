@@ -1,6 +1,19 @@
 <div class="container">
     <p>Hello World!</p>
     <h1>Detail Ekspedisi <?= $data['judul_ekspedisi']; ?></h1>
+    
+    <!-- Debug View (debug sblm pakai echo Test 1-5 dan flush) -->
+    <div style="background: yellow; padding: 10px; margin: 10px 0;">
+        <strong>DEBUG VIEW:</strong><br>
+        <strong>judul_ekspedisi:</strong> <?= $data['judul_ekspedisi']; ?><br>
+        <strong>jenisEkspedisi:</strong> <?= is_array($data['jenisEkspedisi']) ? count($data['jenisEkspedisi']) : 'NOT ARRAY' ?><br>
+        <strong>Data Sample:</strong>
+        <?php if(!empty($data['jenisEkspedisi'])) : ?>
+            <p>First Item: <?= $data['jenisEkspedisi'][0]['jenisEkspedisi']; ?></p>
+        <?php else : ?>
+            NO DATA
+        <?php endif; ?>
+    </div>
 
     <?php if(!empty($data['jenisEkspedisi'])) : ?>
         <table class="table table-striped">

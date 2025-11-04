@@ -264,6 +264,12 @@ alter table ekspedisi
 alter table ekspedisi
     drop column idJenisEkspedisi_fkEkspedisi;
 
+-- Add column 'fotoEkspedisi' for the Company's Profile Photo
+alter table ekspedisi
+add column fotoEkspedisi blob after tglInput;
+
+select * from ekspedisi;
+
 /* 6.2. Table Jenis Ekspedisi */
 create table jenis_ekspedisi(
     idJenisEkspedisi int(10) primary key auto_increment,
