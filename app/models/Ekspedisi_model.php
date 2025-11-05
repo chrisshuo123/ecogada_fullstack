@@ -22,11 +22,25 @@ class Ekspedisi_model {
         return "Ekspedisi tidak ditemukan di method getNamaEkspedisi";
     }
 
+    public function getEkspedisiById($idEkspedisi) {
+        $query = 'SELECT * FROM ekspedisi WHERE idEkspedisi = :idEkspedisi';
+        $this->db->query($query);
+        $this->db->bind(':idEkspedisi', $idEkspedisi);
+        
+        try {
+            $result = $this->db->single();
+        } catch (Exception $e) {
+            error_log("Error getting ekspedisi by ID: " . $e->getMessage());
+            return null;
+        }
+    }
+
     public function getAllEkspedisiGrouped() { // Karna ini dari DB m:n
         $query = '
             SELECT
                 L.idLayananEkspedisi,
                 E.idEkspedisi,
+                E.fotoEkspedisi,
                 E.namaEkspedisi,
                 J.jenisEkspedisi,
                 J.deskripsi
@@ -48,18 +62,24 @@ class Ekspedisi_model {
             return [];
         }
 
+        // Perbaikan: Gunakan idEkspedisi sebagai Key secara konsisten
         // GROUPING DI MODEL - Struktur yang benar
         // Group data by nama ekspedisi
         $groupedData = [];
         foreach($rawData as $item) {
-            $namaEkspedisi = $item['namaEkspedisi'];
-            if(!isset($groupedData[$namaEkspedisi])) {
-                $groupedData[$namaEkspedisi] = [
-                    'idEkspedisi' => $item['idEkspedisi'], // Simpan id ekspedisi disini
+            $idEkspedisi = $item['idEkspedisi'];
+
+            if(!isset($groupedData[$idEkspedisi])) {
+                $groupedData[$idEkspedisi] = [
+                    'idEkspedisi' > $idEkspedisi,
+                    'idEkspedisi' => $item['idEkspedisi'],
+                    'namaEkspedisi' => $item['namaEkspedisi'], // Simpan id ekspedisi disini
+                    'fotoEkspedisi' => $item['fotoEkspedisi'], // Simpan Blog data langsung
                     'jenisLayanan' => [] // Array untuk jenis - jenis layanan
                 ];
             }
-            $groupedData[$namaEkspedisi]['jenisLayanan'][] = $item['jenisEkspedisi'];
+            if(!in_array($item['jenisEkspedisi'], $groupedData[$idEkspedisi]['jenisLayanan'])) // Kenapa tidak bisa pakai && melainkan harus koma ','?
+            $groupedData[$idEkspedisi]['jenisLayanan'][] = $item['jenisEkspedisi'];
         }
 
         return $groupedData;
