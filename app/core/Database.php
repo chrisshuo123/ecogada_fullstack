@@ -16,6 +16,10 @@ class Database {
     
         // Option: digunakan utk mengoptimasi DB kita, agar koneksi tetap persisten
         $option = [
+            // Jangan stringify blob, dan gunakan native prepares
+            PDO::ATTR_STRINGIFY_FETCHES => false, // ⚠️ PENTING: Jangan stringify BLOB
+            PDO::ATTR_EMULATE_PREPARES => false, // ⚠️ PENTING: Gunakan native prepares
+            // Yg General
             PDO::ATTR_PERSISTENT => true,
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
         ];
