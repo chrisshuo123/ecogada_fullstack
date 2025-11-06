@@ -44,6 +44,26 @@ WHERE idEkspedisi IN (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19);
 
 SELECT LOAD_FILE('../public/img/1-jne-logo.png') AS test_load;
 
+-- Buat Memverifikasi kepastian adanya file Image BLOB di column fotoEkspedisi:
+SELECT 
+    idEkspedisi, 
+    namaEkspedisi,
+    fotoEkspedisi IS NULL as is_null,
+    fotoEkspedisi = '' as is_empty_string, 
+    LENGTH(fotoEkspedisi) as blob_size
+FROM ekspedisi 
+WHERE idEkspedisi IN (1, 2, 3);
+
+-- Test BLOB langsung ke database
+-- Test apakah BLOB benar-benar binary data
+SELECT
+    idEkspedisi,
+    namaEkspedisi,
+    LENGTH(fotoEkspedisi) as blob_size,
+    LEFT(HEX(fotoEkspedisi), 20) as blob_preview,
+    fotoEkspedisi = '' as is_empty_string
+FROM ekspedisi
+WHERE idEkspedisi = 1;
 
 select * from ekspedisi;
 describe ekspedisi;
