@@ -1,5 +1,85 @@
+/* LIST OF CONTENTS (DAFTAR ISI) */
+/* 
+=== 1 - GENERAL PAGE ===
+=== 2 - STYLE USER PAGE ===
+=== 3 - STYLE EKSPEDISI PAGE ===
+1. Style Ekspedisi
+2. Style Jenis Ekspedisi List
+*/
+
+/* === 1 - GENERAL PAGE === */
 /* Adjusting the body height with the navbar */
 .margin-top-body {
-    margin-top: 115px;
+    margin-top: 45px;
     /* background-color: chocolate; */
+}
+
+/* For pages with Main Title below the Navbar */
+div h1 {
+    margin-bottom: 3.5%;
+}
+
+/* === 3 - EKSPEDISI PAGE === */
+/* 1. Style Ekspedisi */
+.image-ekspedisi {
+    width: 100%;
+    height: auto;
+    object-fit: contain; /* Menjaga proporsi gambar */
+    display: block;
+    border: 1px solid gray;
+    border-radius: 25px;
+}
+
+.service-badge {
+    background-color: #60baf5ff;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    display: inline-block;
+}
+
+.service-badge:hover {
+    background-color: #60baf5ff;
+    transform: translateY(-1px);
+}
+
+.no-data {
+    text-align: center;
+    padding: 40px;
+    color: #7f8c8d;
+    font-style: italic;
+}
+
+/* 2. Style Jenis Ekspedisi List */
+.foto-detail-ekspedisi {
+    border-radius: 25px;
+    width: 400px;
+    height: 300px;
+    margin-bottom: 3%;
+    border: 1px solid gray;
+}
+
+.tambah-layanan-ekspedisi a {
+    margin-bottom: 3%;
+}
+
+.jenis-ekspedisi-button div {
+    display: flex;
+    flex-direction: row;
+}
+
+.jenis-ekspedisi-button div a {
+    margin-right: 3%;
+}
+
+@media screen and (max-width: 768px) {
+    .jenis-ekspedisi-button div {
+        flex-direction: column;
+        width: 100%;
+    }
+    .jenis-ekspedisi-button div a {
+        margin-bottom: 12%;
+    }
 }
