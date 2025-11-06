@@ -12,7 +12,7 @@ class Ekspedisi extends Controller {
         $this->view('templates/footer');
     }
 
-    public function detail($idEkspedisi) {
+    // public function detail($idEkspedisi) {
         // Karena didalam tag div class .container tidak menampilkan apa2, berarti ini masalah serius
         // Aktifkan error reporting dgn Echo test 1 sampai 5 lalu flush
         // error_reporting(E_ALL);
@@ -21,10 +21,11 @@ class Ekspedisi extends Controller {
         // echo "TEST 1: Masuk method detail<br>";
         // flush();
 
-        $namaEkspedisi = $this->model('Ekspedisi_model')->getNamaEkspedisi($idEkspedisi);
+        // $namaEkspedisi = $this->model('Ekspedisi_model')->getNamaEkspedisi($idEkspedisi);
         // echo "TEST 2: Nama Ekspedisi: $namaEkspedisi<br>";
         // Get semua layanan (jenis_ekspedisi) yang terkait dengan ekspedisi ini
-        $data['jenisEkspedisi'] = $this->model('Ekspedisi_model')->getJenisEkspedisi_By_IdEkspedisi($idEkspedisi);
+        // $data['jenisEkspedisi'] = $this->model('Ekspedisi_model')->getJenisEkspedisi_By_IdEkspedisi($idEkspedisi);
+        // $data['foto'] = $this->model('Foto_model')->getFotoEkspedisiById($idEkspedisi);
         // echo "TEST 3: Data Jumlah Jenis Ekspedisi: " . count($data['jenisEkspedisi']) . "<br>";
         // flush();
         
@@ -42,9 +43,9 @@ class Ekspedisi extends Controller {
         //     exit;
         // }
 
-        $data['judul'] = "Detail " . $namaEkspedisi;
+        // $data['judul'] = "Detail " . $namaEkspedisi;
         // Judul pada halaman detail per ekspedisi (yg diatas untuk header):
-        $data['judul_ekspedisi'] = $namaEkspedisi;
+        // $data['judul_ekspedisi'] = $namaEkspedisi;
         
         // echo "TEST 4: Sebelum load view<br>";
         // flush();
@@ -61,11 +62,52 @@ class Ekspedisi extends Controller {
         //     echo "Error in view: " . $e->getMessage() . "<br>";
         // }
         
+        // $this->view('templates/header', $data);
+        // $this->view('ekspedisi/detail', $data);
+        // $this->view('templates/footer');
+        // echo "TEST 5: Setelah load view<br>";
+        // flush();
+    // }
+
+    public function detail($idEkspedisi) {
+        // Pengembalian Nama Page Header dan Judul disini
+        $namaEkspedisi = $this->model('Ekspedisi_model')->getNamaEkspedisi($idEkspedisi);
+        $data['judul'] = "Detail " . $namaEkspedisi;
+        $data['judul_ekspedisi'] = $namaEkspedisi;
+
+        // Instantiate variabel dari ekspedisi model, dan foto model
+        $ekspedisiModel = $this->model('Ekspedisi_model');
+        $fotoModel = $this->model('Foto_model');
+
+        // Ambil data ekspedisi
+        $data['ekspedisi'] = $ekspedisiModel->getJenisEkspedisi_By_IdEkspedisi($idEkspedisi);
+        // Ambil data foto
+        $fotoData = $fotoModel->getFotoEkspedisiById($idEkspedisi);
+
+        // Bagi Foto: Convert to base64 untuk langsung di embed di img src
+        if($fotoData && !empty($fotoData['fotoEkspedisi'])) {
+            $base64 = base64_encode($fotoData['fotoEkspedisi']);
+            $data['fotoBase64'] = "data:image/jpeg;base64," . $base64;
+        } else {
+            // Default image path - sesuaikan dengan struktur folder anda
+            $defaultPath = 'public/img/default-ekspedisi.png';
+            if(file_exists($defaultPath)) {
+                $defaultData = base64_encode(file_get_contents($defaultPath));
+                $data['fotoBase64'] = "data:image/png;base64," . $defaultData;
+            } else {
+                // Fallback hardcoded default
+                $data['fotoBase64'] = BASEURL . "/img/default-ekspedisi.png";
+            }
+        }
+
+        // Data untuk view
+        $data['judul_ekspedisi'] = $data['ekspedisi']['judulEkspedisi'] ?? 'Ekspedisi';
+        $data['jenisEkspedisi'] = $ekspedisiModel->getJenisEkspedisi_By_IdEkspedisi($idEkspedisi);
+        $data['idEkspedisi'] = $idEkspedisi;
+        
         $this->view('templates/header', $data);
         $this->view('ekspedisi/detail', $data);
         $this->view('templates/footer');
-        // echo "TEST 5: Setelah load view<br>";
-        // flush();
     }
 
     // Lakukan View Method langsung, ngedebug Test 1-5 Flush diatas ini

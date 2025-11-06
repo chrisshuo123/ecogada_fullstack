@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container margin-top-body">
     <h1>Data Layanan Ekspedisi</h1>
 
     <div class="card-styling" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 5%;">
@@ -6,26 +6,9 @@
         <?php foreach ($data['ekspedisiGrouped'] as $ekspedisiData) : ?>
             <div class="card">
                 <div class="card-body" style="display: flex; flex-direction: column; height: 100%;">
-                    <!-- Image -->
+                    <!-- Image dari Image controller -->
                     <div>
-                        <?php if(!empty($ekspedisiData['fotoEkspedisi'])): ?>
-                            <!-- Convert BLOB to base64 untuk Langsung Ditampilkan -->
-                            <?php 
-                            $imageData = $ekspedisiData['fotoEkspedisi'];
-                            $imageType = 'image/jpg'; // Defaultnya PNG (image/png), bisa detect dari header
-                            if(strpos($imageData, "\x89PNG") === 0) {
-                                $imageType = 'image/png';
-                            } elseif(strpos($imageData, "\xFF\xD8") === 0) {
-                                $imageType = 'image/jpeg';
-                            }
-                            $base64Image = 'data:' . $imageType . ';base64' . base64_encode($imageData);
-                            ?>
-                            <img src="<?= $base64Image ?>" class="card-img-top" alt="<?= $ekspedisiData['namaEkspedisi']; ?>" style="width:100%; height:200px; object-fit:cover;">
-                        <?php else: ?>
-                            <img src="<?= BASEURL; ?>/img/default-ekspedisi.png" class="card-img-top" alt="Default Image" style="width: 100%; height: 200px; object-fit: cover;">
-                        <?php endif; ?>
-                        <!-- <img src=" BASEURL; /img/jne-image-sample.png" class="card-img-top" alt="..."> -->
-                        <!-- <img src="$ekspedisiData['fotoEkspedisi']; " class="card-img-top" alt="..."> -->
+                        <img src="<?= BASEURL; ?>/foto/getImageEkspedisi/<?= $ekspedisiData['idEkspedisi']; ?>" alt="Foto Ekspedisi" class="image-ekspedisi">
                     </div>
                     <!-- Title -->
                     <div style="margin: 6% 0;">
@@ -51,28 +34,3 @@
         <div class="no-data">Tidak ada data ekspedisi</div>
     <?php endif; ?>
 </div>
-
-<style>
-.service-badge {
-    background-color: #60baf5ff;
-    color: white;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: 500;
-    display: inline-block;
-}
-
-.service-badge:hover {
-    background-color: #60baf5ff;
-    transform: translateY(-1px);
-}
-
-.no-data {
-    text-align: center;
-    padding: 40px;
-    color: #7f8c8d;
-    font-style: italic;
-}
-
-</style>

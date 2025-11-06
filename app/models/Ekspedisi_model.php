@@ -22,17 +22,40 @@ class Ekspedisi_model {
         return "Ekspedisi tidak ditemukan di method getNamaEkspedisi";
     }
 
+    // Untuk menangkap Image Logo Ekspedisi bagi hal. views/ekspedisi/index
     public function getEkspedisiById($idEkspedisi) {
-        $query = 'SELECT * FROM ekspedisi WHERE idEkspedisi = :idEkspedisi';
+        error_log("=== GET EKSPEDISI BY ID ===");
+        error_log("ID: " . $idEkspedisi);
+
+        $query = 'SELECT idEkspedisi, namaEkspedisi, HEX(fotoEkspedisi) as foto_hex FROM ekspedisi WHERE idEkspedisi = :idEkspedisi';
         $this->db->query($query);
         $this->db->bind(':idEkspedisi', $idEkspedisi);
         
-        try {
-            $result = $this->db->single();
-        } catch (Exception $e) {
-            error_log("Error getting ekspedisi by ID: " . $e->getMessage());
-            return null;
+        $result = $this->db->single();
+
+        // DEBUG CRITICAL
+        // error_log("Result type: " . gettype($result));
+        // error_log("Result keys: " . (is_array($result) ? implode(', ', array_keys($result)) : 'NOT ARRAY'));
+        // error_log("fotoEkspedisi exists: " . (isset($result['fotoEkspedisi']) ? 'YES' : 'NO'));
+        // error_log("fotoEkspedisi type: " . gettype($result['fotoEkspedisi']));
+
+        // if(isset($result['fotoEkspedisi'])) {
+        //     error_log("fotoEkspedisi length: " . strlen($result['fotoEkspedisi']));
+        //     error_log("fotoEkspedisi first 10 chars: " . bin2hex(substr($result['fotoEkspedisi'], 0, 10)));
+        // }
+        // ==== KETEMU: fotoEkspedisi pada 'fotoEkspedisi exists' mengreturn NO, karena PHP tidak bisa membaca file BLOB sehingga dianggap Null.
+
+        if($result && !empty($result['foto_hex'])) {
+            error_log("HEX data found, length: " . strlen($result['foto_hex']));
+            // Convert HEX back to binary
+            $result['fotoEkspedisi'] = hex2bin($result['foto_hex']);
+            unset($result['foto_hex']);
+        } else {
+            error_log("No HEX data found");
+            $result['fotoEkspedisi'] = null;
         }
+        
+        return $result;
     }
 
     public function getAllEkspedisiGrouped() { // Karna ini dari DB m:n
@@ -71,7 +94,7 @@ class Ekspedisi_model {
 
             if(!isset($groupedData[$idEkspedisi])) {
                 $groupedData[$idEkspedisi] = [
-                    'idEkspedisi' > $idEkspedisi,
+                    'idEkspedisi' => $idEkspedisi,
                     'idEkspedisi' => $item['idEkspedisi'],
                     'namaEkspedisi' => $item['namaEkspedisi'], // Simpan id ekspedisi disini
                     'fotoEkspedisi' => $item['fotoEkspedisi'], // Simpan Blog data langsung
