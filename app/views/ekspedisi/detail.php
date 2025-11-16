@@ -33,7 +33,7 @@
                     <td><?= !empty($layanan['deskripsi']) ? $layanan['deskripsi'] : '<em class="text-muted">Tidak ada deskripsi</em>'; ?></td>
                     <td class="jenis-ekspedisi-button">
                         <div>
-                            <a type="button" class="btn btn-warning">Ubah</a>
+                            <a type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#formModal">Ubah</a>
                             <a type="button" class="btn btn-danger">Hapus</a>
                         </div>
                     </td>
