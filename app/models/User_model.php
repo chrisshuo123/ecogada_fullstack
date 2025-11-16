@@ -77,7 +77,7 @@ class User_model {
                     email = :email,
                     username = :username,
                     password = :password
-                WHERE idUser = :id";
+                WHERE idUser = :id"; // CHANGED FROM :id TO :idUser
 
         // DEBUG: Log binding values
         error_log("Binding values:");
@@ -86,8 +86,8 @@ class User_model {
         error_log(":email = " . $data['email']);
         error_log(":username = " . $data['username']);
         error_log(":password = " . $data['password']);
-        error_log(":id = " . $data['id']);
-        error_log(":idUser = " . $data['idUser']);
+        // error_log(":id = " . $data['id']); // USING id AS idUser
+        error_log(":idUser = " . $data['id']); // USING id AS idUser
 
         $this->db->query($query);
         $this->db->bind(':namaDepan', $data['namaDepan']);
@@ -95,7 +95,8 @@ class User_model {
         $this->db->bind(':email', $data['email']);
         $this->db->bind(':username', $data['username']);
         $this->db->bind(':password', $data['password']);
-        $this->db->bind(':id', $data['id']);
+        // $this->db->bind(':idUser', $data['id']);
+        $this->db->bind(':id', $data['id']); // THE :idUser is the :id, AND USING $data['id']
     
         $this->db->execute();
 
