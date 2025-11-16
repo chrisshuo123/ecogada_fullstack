@@ -1,19 +1,19 @@
 $(function() {
-    $('.tombolTambahData').on('click', function() {
+    $('.tombolTambahDataUser').on('click', function() {
 
         $('#judulModalLabel').html('Tambah Data User Merchantzz');
         $('#tombolData').html('Tambah Data');
         $('.modal-body form').attr('action', 'http://localhost/ecogada_fullstack/public/user/tambah');
     });
 
-    $('.tampilModalUbah').on('click', function() {
+    $('.tampilModalUbahUser').on('click', function() {
         
         $('#judulModalLabel').html('Ubah Data User Merchant');
         $('#tombolData').html('Ubah Data');
         $('.modal-body form').attr('action', 'http://localhost/ecogada_fullstack/public/user/ubah');
     
         // Bisa klik kanan > inspect > console, klik 'ubah' setiap row, akan menampilkan nomor row sesuai:
-        const id = $(this).data('id'); //idUser
+        const id = $(this).data('user-id'); //idUser
         console.log('Clicked ID: ', id);
         
         $.ajax({
@@ -23,14 +23,16 @@ $(function() {
             dataType: 'json',
             success: function(data) {
                 console.log('Data recieved from server: ', data);
-                console.log('idUser: ', data.id);
-                console.log('Nama Depan: ', data.namaDepan);
-                console.log('Nama Belakang: ', data.namaBelakang);
-                console.log('Email: ', data.email);
-                console.log('Username: ', data.username);
-                console.log('Password: ', data.password);
+                console.log('id: ', data.id); // ini id yang diatas, dari data-id.
+                console.log('idUser: ', data.idUser); // Menyesuaikan id #idUser pada form User View Page
+                console.log('Nama Depan: ', data.namaDepan); // Menyesuaikan id #namaDepan pada form User View Page
+                console.log('Nama Belakang: ', data.namaBelakang); // Menyesuaikan id #namaBelakang
+                console.log('Email: ', data.email); // Menyesuaikan id #email
+                console.log('Username: ', data.username); // Menyesuaikan id #username
+                console.log('Password: ', data.password); // Menyesuaikan id #password
 
-                // panggil id dari masing2 form di inde.php bagian Modal, ke sini
+                // Set form values
+                // panggil id dari masing2 form di index.php user bagian Modal, ke sini
                 $('#id').val(data.idUser);
                 $('#namaDepan').val(data.namaDepan);
                 $('#namaBelakang').val(data.namaBelakang);
