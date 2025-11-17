@@ -9,6 +9,10 @@ class Database {
 
     private $dbh;
     private $stmt;
+    private $error;
+
+    // Add this property to track transaction value
+    private $inTransaction = false;
 
     // Yg awal ada didalam model semua, pindahkan kesini saja
     public function __construct() {
@@ -21,7 +25,8 @@ class Database {
             PDO::ATTR_EMULATE_PREPARES => false, // ⚠️ PENTING: Gunakan native prepares
             // Yg General
             PDO::ATTR_PERSISTENT => true,
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, // This is important for Transactions
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
         ];
 
         try {
@@ -30,6 +35,66 @@ class Database {
             die("Connection failed: " . $e->getMessage());
         }
     }
+
+    // ===== TRANSACTION METHODS =====
+
+    /**
+     * Begin a transaction
+     */
+    public function beginTransaction() {
+        if(!$this->inTransaction) {
+            $this->dbh->beginTransaction();
+            $this->inTransaction = true;
+        }
+    }
+
+    /**
+     * Commit a transaction
+     */
+    public function commit() {
+        if($this->inTransaction) {
+            $this->dbh->commit();
+            $this->inTransaction = false;
+        }
+    }
+
+    /**
+     * Rollback a transaction
+     */
+    public function rollBack() {
+        if($this->inTransaction) {
+            $this->dbh->rollBack();
+            $this->inTransaction = false;
+        }
+    }
+
+    /**
+     * Check if currently in a transaction
+     */
+    public function inTransaction() {
+        return $this->inTransaction;
+    }
+
+    /**
+     * Execute a transaction with automatic commit/rollback
+     * Usage: $db->transaction(function() use ($db) {
+     *      $db->query("INSERT ...");
+     *      $db->execute();
+     * }); 
+     */
+    public function transaction(callable $callback) {
+        try {
+            $this->beginTransaction();
+            $callback($this);
+            $this->commit();
+            return true;
+        } catch(Exception $e) {
+            $this->rollBack();
+            throw $e;
+        }
+    }
+
+    // ===== Query, Bind, Execute, Etc =====
 
     public function query($query) {  // querynya apapun nantinya
         // Yg isinya statement, diisi dgn handlernya (dbh), prepare, dan query
@@ -81,5 +146,29 @@ class Database {
     // Untuk menghitung ada berapa baris yg baru berubah didalam tabelnya (misal: ada tambah, ada ngepush, ada ubah nantinya) itu ada angkanya
     public function rowCount() { // rowCount ini punya kita
         return $this->stmt->rowCount(); //rowCount ini punya PDO
+    }
+
+    /** ===============
+     * Get the Last inserted ID
+     * Alternative with error handling
+     */
+    public function lastInsertID() {
+        try {
+            return $this->dbh->lastInsertID();
+        } catch(PDOException $e) {
+            $this->error = $e->getMessage();
+            error_log("lastInsertID error: ", $this->error);
+            return false;
+        }
+    }
+
+    // ===== ERROR HANDLING =====
+
+    public function getError() {
+        return $this->error;
+    }
+
+    public function debugDumpParams() {
+        return $this->stmt->debugDumpParams();
     }
 }
