@@ -1,4 +1,6 @@
 $(function() {
+
+    // === HALAMAN USER ===
     $('.tombolTambahDataUser').on('click', function() {
 
         $('#judulModalLabel').html('Tambah Data User Merchantzz');
@@ -66,4 +68,43 @@ $(function() {
             }
         });
     });
+
+    // === HALAMAN JENIS EKSPEDISI ===
+    $('.tombolTambahDataJenisEkspedisi').on('click', function() {
+        // Get the nama ekspedisi from the data attribute
+        var namaEkspedisi = $('#ekspedisi-container').data('ekspedisi-nama');
+        console.log('Nama Ekspedisi: ', namaEkspedisi);
+        
+        $('#judulModalLabel').html(`Tambah Jenis Layanan ${namaEkspedisi}`);
+        console.log()
+        $('#jenisEkspedisi').attr('placeholder', `Input Jenis Layanan dari ${namaEkspedisi}`);
+        $('#deskripsi').attr('placeholder', `Input Deskripsi layanan dari ${namaEkspedisi}`);
+        $('#tombolData').html('Tambah Data');
+        $('.modal-body form').attr('action', 'http://localhost/ecogada_fullstack/public/ekspedisi/tambahJenisEkspedisi');
+    });
+
+    $('.tombolUbahDataJenisEkspedisi').on('click', function() {
+        // Get the nama ekspedisi from the data attribute
+        var namaEkspedisi = $('#ekspedisi-container').data('ekspedisi-nama');
+
+        $('#judulModalLabel').html(`Ubah Jenis Layanan ${namaEkspedisi}`);
+        $('#jenisEkspedisi').attr('placeholder', `Ubah Jenis Layanan dari ${namaEkspedisi}`);
+        $('#deskripsi').attr('placeholder', `Ubah Deskripsi layanan dari ${namaEkspedisi}`);
+        $('#tombolData').html('Ubah Data');
+        $('.modal-body form').attr('action', 'http://localhost/ecogada_fullstack/public/ekspedisi/detail/ubah');
+    });
+
+    // Handle delete confirmation Khusus jenisEkspedisi
+    $(document).on('click', '.tombolHapusJenisEkspedisi', function(e) {
+        e.preventDefault();
+        var namaLayanan = $(this).data('nama');
+        var deleteUrl = $(this).attr('href');
+
+        if(confirm('Yakin mau hapus jenis ekspedisi "' + namaLayanan + '" ini?')) {
+            window.location.href = deleteUrl;
+        }
+    });
+
 });
+
+
