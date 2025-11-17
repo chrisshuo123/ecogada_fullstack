@@ -109,7 +109,7 @@ class Ekspedisi_model {
     }
 
     public function getJenisEkspedisi_By_IdEkspedisi($idEkspedisi) {
-        $query = 'SELECT J.jenisEkspedisi, J.deskripsi
+        $query = 'SELECT J.idJenisEkspedisi, J.jenisEkspedisi, J.deskripsi
             FROM layanan_ekspedisi L
             JOIN jenis_ekspedisi J ON L.idJenisEkspedisi_fkLayananEkspedisi = J.idJenisEkspedisi
             WHERE L.idEkspedisi_fkLayananEkspedisi = :idEkspedisi
@@ -181,5 +181,76 @@ class Ekspedisi_model {
         print_r($data);
         echo "</pre>";
         exit;
+    }
+
+    public function tambahDataJenisEkspedisi($data) {
+        try {
+            // Start transaction for data consistency
+            $this->db->beginTransaction();
+
+            // Query 1: Insert into jenis_ekspedisi
+            $query1 = "INSERT INTO jenis_ekspedisi(tglInput, jenisEkspedisi, deskripsi)
+                VALUES(:tglInput, :jenisEkspedisi, :deskripsi)";
+            $this->db->query($query1);
+            $this->db->bind(':tglInput', $data['tglInput']); // Yg ini blm jelas ada tdk di form
+            $this->db->bind(':jenisEkspedisi', $data['jenisEkspedisi']);
+            $this->db->bind(':deskripsi', $data['deskripsi']);
+            $this->db->execute();
+            
+            // Get the auto_increment ID from the first insert
+            $lastInsertId = $this->db->lastInsertId();
+
+            // Query 2: Insert into layanan_ekspedisi (linking table)
+            $query2 = "INSERT INTO layanan_ekspedisi(idEkspedisi_fkLayananEkspedisi, idJenisEkspedisi_fkLayananEkspedisi) 
+                VALUES(:idEkspedisi, :idJenisEkspedisi)";
+            $this->db->query($query2);
+            $this->db->bind(':idEkspedisi', $data['idEkspedisi']); // This should come from your URL, not the column db name
+            $this->db->bind(':idJenisEkspedisi', $lastInsertId);
+
+            $this->db->execute();
+
+            // commit transaction if both queries succeed
+            $this->db->commit();
+            return $this->db->rowCount();
+        } catch(Exception $e) {
+            // Rollback if any query fails
+            $this->db->rollBack();
+
+            // Log the error (you might want to add a logger)
+            error_log("Database transaction failed: ", $e->getMessage());
+
+            // Return 0 to indicate failure, or re-throw the Exception:
+            return 0;
+        }
+    }
+
+    // First, delete from the child table (layanan_ekspedisi) DELETE FROM `layanan_ekspedisi` WHERE `idJenisEkspedisi_fkLayananEkspedisi` IN (68, 69);
+    // Then, delete from the parent table (jenis_ekspedisi) DELETE FROM `jenis_ekspedisi` WHERE `idJenisEkspedisi` IN (68, 69);
+    public function hapusDataJenisEkspedisi($idJenisEkspedisi) {
+        try {
+            // Query 1: Delete from child table first
+            $query1 = "DELETE FROM layanan_ekspedisi WHERE idJenisEkspedisi_fkLayananEkspedisi = :idJenisEkspedisi";
+            $this->db->query($query1);
+            $this->db->bind(':idJenisEkspedisi', $idJenisEkspedisi);
+            $this->db->execute();
+            $childDeleted = $this->db->rowCount();
+
+            // Query 2: Delete from parent table
+            $query2 = "DELETE FROM jenis_ekspedisi WHERE idJenisEkspedisi = :idJenisEkspedisi";
+            $this->db->query($query2);
+            $this->db->bind(':idJenisEkspedisi', $idJenisEkspedisi);
+            $this->db->execute();
+            $parentDeleted = $this->db->rowCount();
+
+            $this->db->commit();
+
+            // Return true if parent record was deleted (main goal)
+            return $parentDeleted > 0;
+            // return $this->db->rowCount();
+        } catch(Exception $e) {
+            $this->db->rollBack();
+            error_log("Delete failed: " . $e->getMessage());
+            return false;
+        }
     }
 }
