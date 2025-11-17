@@ -1,4 +1,11 @@
-<div class="container margin-top-body">
+<div class="container margin-top-body" id="ekspedisi-container" data-ekspedisi-nama="<?= htmlspecialchars($data['judul_ekspedisi']) ?>">
+
+    <div class="row">
+        <div class="col-lg-6">
+            <?php Flasher::flash(); ?>
+        </div>
+    </div>
+
     <h1>Detail Ekspedisi <?= $data['judul_ekspedisi']; ?></h1>
 
     <?php if(isset($data['fotoBase64'])): ?>
@@ -12,7 +19,7 @@
             class="foto-detail-ekspedisi">
     <?php endif; ?>
 
-    <div class="tambah-layanan-ekspedisi"><a href="<?= BASEURL; ?>/ekspedisi/detail/tambah" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#formModal">Tambah List Layanan Ekspedisi</a></div>
+    <div class="tambah-layanan-ekspedisi tombolTambahDataJenisEkspedisi"><a href="<?= BASEURL; ?>/ekspedisi/detail/tambah" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#formModal">Tambah List Layanan Ekspedisi</a></div>
 
     <?php if(!empty($data['jenisEkspedisi'])) : ?>
         <table class="table table-striped">
@@ -33,8 +40,11 @@
                     <td><?= !empty($layanan['deskripsi']) ? $layanan['deskripsi'] : '<em class="text-muted">Tidak ada deskripsi</em>'; ?></td>
                     <td class="jenis-ekspedisi-button">
                         <div>
-                            <a type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#formModal">Ubah</a>
-                            <a type="button" class="btn btn-danger">Hapus</a>
+                            <a type="button" class="btn btn-warning tombolUbahDataJenisEkspedisi" data-bs-toggle="modal" data-bs-target="#formModal">Ubah</a>
+                            <a type="button" class="btn btn-danger" 
+                            href="<?= BASEURL ?>/ekspedisi/hapusJenisEkspedisi/<?= $layanan['idJenisEkspedisi'] ?>/<?= $data['idEkspedisi'] ?>" onclick="return confirm('Yakin mau hapus baris No <?= $rowCount-1 ?> ini?')">
+                            Hapus
+                            </a>
                         </div>
                     </td>
                 </tr>
@@ -56,6 +66,11 @@
             </a>
         </div>
     <?php endif; ?>
+
+    <!-- Debug output -->
+    <script>
+    console.log('PHP judul_ekspedisi:', '<?= $data['judul_ekspedisi'] ?>');
+    </script>
 </div>
 
 <!-- MODAL POP-UP -->
@@ -63,26 +78,28 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="judulModal">Tambah Jenis Layanan JNE</h5>
+                <h5 class="modal-title" id="judulModalLabel">Tambah Jenis Layanan JNE</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="<?= BASEURL; ?>/ekspedisi/jenis/tambah" method="POST">
-                    <input type="hidden" name="id" id="id">
+                <form action="<?= BASEURL; ?>/ekspedisi/tambahJenisEkspedisi" method="POST">
+                    <input type="hidden" name="idEkspedisi" id="idEkspedisi" value="<?= $data['idEkspedisi'] ?>">
                     <!-- Jenis Ekspedisi -->
                     <div class="mb-3">
                         <label for="jenisEkspedisi" class="form-label">Jenis Ekspedisi</label>
-                        <input type="text" class="form-control" id="jenisEkspedisi jenisEkspedisiModal" name="jenisEkspedisi" placeholder="Input Jenis Layanan dari JNE">
+                        <input type="text" class="form-control" id="jenisEkspedisi" name="jenisEkspedisi" placeholder="Input Jenis Layanan dari JNE"> <!-- id="jenisEkspedisiModal" commented -->
                     </div>
                     <!-- Deskripsi -->
                     <div class="mb-3">
                         <label for="deskripsi" class="form-label">Deskripsi</label>
-                        <input type="text" class="form-control" id="deskripsi deskripsiModal" name="deskripsi" placeholder="Input Deskripsi layanan dari JNE">
-                    </div>
+                        <textarea type="text" class="form-control" id="deskripsi" name="deskripsi" placeholder="Input Deskripsi layanan dari JNE"></textarea>
+                    </div> <!-- id="deskripsiModal" commented -->
+                    <!-- tglInput (hidden) -->
+                    <input type="hidden" name="tglInput" value="<?= date('Y-m-d H:i:s') ?>">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                <button type="button" class="btn btn-primary" id="tombolModal">Tambah</button>
+                <button type="submit" class="btn btn-primary" id="tombolData">Tambah</button>
                 </form>
             </div>
         </div>
