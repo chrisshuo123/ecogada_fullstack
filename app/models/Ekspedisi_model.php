@@ -58,6 +58,65 @@ class Ekspedisi_model {
         return $result;
     }
 
+    // === DROPDOWN PINDAH EKSPEDISI ===
+    // Khususnya buat fitur Dropdown Pindah Ekspedisi saat Ubah
+    public function getAllEkspedisi() {
+        $query = 'SELECT idEkspedisi, namaEkspedisi from ekspedisi order by namaEkspedisi';
+        $this->db->query($query);
+        return $this->db->resultSet();
+    }
+    // Tambah method relasi m:n dari tabel layanan_ekspedisi ini
+    public function getIdEkspedisiByJenisEkspedisi($idJenisEkspedisi) {
+        // Debug
+        error_log("Searching for idJenisEkspedisi: " . $idJenisEkspedisi);
+
+        try {
+            $query = "SELECT *
+                    FROM layanan_ekspedisi
+                    WHERE idJenisEkspedisi_fkLayananEkspedisi = :id"; // m:n table
+        
+            $this->db->query($query);
+            $this->db->bind(':id', $idJenisEkspedisi);
+            $result = $this->db->single();
+            
+            // Debug hasil query
+            error_log('Full Query result: ' . print_r($result, true));
+            
+            if($result) {
+                // Cek berbagai kemungkinan nama kolom
+                $idEkspedisi = $result['idEkspedisi_fkLayananEkspedisi'] ??
+                                $result['idEkspedisi'] ??
+                                null;
+
+                error_log("Found idEkspedisi: " . $idEkspedisi);
+                return $idEkspedisi;
+            } else {
+                error_log("No data found in layanan_ekspedisi for id: " . $idJenisEkspedisi);
+                return null;
+            }
+        } catch(Exception $e) {
+            error_log("Error in getIdEkspedisiByJenisEkspedisi: " . $e->getMessage());
+            return null;
+        }
+        // return $result ? $result['idJenisEkspedisi_fkLayananEkspedisi'] : null;
+    }
+
+    // Ini bagian Update dropdown Pindah jenisEkspedisi ke Ekspedisi Lain
+    public function ubahEkspedisiByJenisEkspedisi($idJenisEkspedisi, $idEkspedisiBaru) {
+        /**UPDATE layanan_ekspedisi
+        SET idEkspedisi_fkLayananEkspedisi = 13, idJenisEkspedisi_fkLayananEkspedisi = 72
+        WHERE idLayananEkspedisi = 70; */
+        $query = 'UPDATE layanan_ekspedisi
+                SET idEkspedisi_fkLayananEkspedisi = :idEkspedisi
+                WHERE idJenisEkspedisi_fkLayananEkspedisi = :idJenisEkspedisi';
+        
+        $this->db->query($query);
+        $this->db->bind(':idEkspedisi', $idEkspedisiBaru);
+        $this->db->bind(':idJenisEkspedisi', $idJenisEkspedisi);
+
+        return $this->db->execute();
+    }
+
     public function getAllEkspedisiGrouped() { // Karna ini dari DB m:n
         $query = '
             SELECT
@@ -128,6 +187,18 @@ class Ekspedisi_model {
         //     return $result['idEkspedisi']; // Return string nama saja
         // }
         // return "idEkspedisi tidak ditemukan di method getJenisEkspedisi_By_IdEkspedisi";
+    }
+
+    public function getJenisEkspedisiById($idJenisEkspedisi) {
+        // Ini versi yang tanpa JOIN
+        $query = 'SELECT * FROM jenis_ekspedisi WHERE idJenisEkspedisi = :idJenisEkspedisi';
+        // $query = 'SELECT je.*, le.idEkspedisi_fkLayananEkspedisi as idEkspedisi
+        //         FROM jenis_ekspedisi je
+        //         JOIN layanan_ekspedisi le ON je.idJenisEkspedisi = le.idJenisEkspedisi_fkLayananEkspedisi
+        //         WHERE je.idJenisEkspedisi = :id';
+        $this->db->query($query);
+        $this->db->bind(':idJenisEkspedisi', $idJenisEkspedisi);
+        return $this->db->single(); // Return the single result, not rowCount()
     }
 
     // Sertakan method checkLayananEkspedisiTable memastikan idEkspedisi terbaca di di tabel layanan_ekspedisi:
@@ -252,5 +323,48 @@ class Ekspedisi_model {
             error_log("Delete failed: " . $e->getMessage());
             return false;
         }
+    }
+
+    public function ubahDataJenisEkspedisi($data) {
+        try {
+            $this->db->beginTransaction();
+
+            $query1 = "UPDATE jenis_ekspedisi SET
+                    jenisEkspedisi = :jenisEkspedisi,
+                    deskripsi = :deskripsi
+                WHERE idJenisEkspedisi = :id"; // CHANGED FROM :id TO :idJenisEkspedisi
+
+            $this->db->query($query1);
+            $this->db->bind(':jenisEkspedisi', $data['jenisEkspedisi']);
+            $this->db->bind(':deskripsi', $data['deskripsi']);
+            $this->db->bind(':id', $data['idJenisEkspedisi']);
+            $this->db->execute();
+
+            $rowsAffected1 = $this->db->rowCount();
+            error_log("Rows Affected in query1: " . $rowsAffected1);
+
+            // Query 2 - Update Layanan_ekspedisi
+            // $query2 = "UPDATE layanan_ekspedisi SET
+            //             idEkspedisi_fkLayananEkspedisi = :idEkspedisi
+            //         WHERE idLayananEkspedisi = :id";
+
+            // $this->db->query($query2);
+            // $this->db->bind(':idEkspedisi', $data['idEkspedisi'] ?? '');
+            // $this->db->bind(':id', $data['id'] ?? '');
+            // $this->db->execute();
+
+            // $rowsAffected2 = $this->db->rowCount();
+            // error_log("Rows affected in query2: " . $rowsAffected2);
+
+            // commit transaction if both queries succeed
+            $this->db->commit();
+            // return ($rowsAffected1 > 0 || $rowsAffected2 > 0) ? 1 : 0;
+            return $rowsAffected1 > 0 ? 1 : 0;
+        } catch(Exception $e) {
+            $this->db->rollBack();
+            error_log("Update failed: ", $e->getMessage());
+            return 0;
+        }
+        
     }
 }
