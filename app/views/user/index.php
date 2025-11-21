@@ -10,7 +10,7 @@
 
     <p>Halo, nama saya <?= $data['namaDepan']; ?> <?= $data['namaBelakang']; ?> dengan username <?= $data['username']; ?>.  Saya memiliki password <?= $data['password']; ?> saya adalah seorang admin inti dari Ecogada Fullstack</p>
     <h2>List User Merchant EcoGada Goods</h2>
-    <button type="button" class="btn btn-primary tombolTambahDataUser" style="margin: 1.5% 0 1.5% 0;" data-bs-toggle="modal" data-bs-target="#formModal">
+    <button type="button" class="btn btn-primary tombolTambahDataUser" style="margin: 1.5% 0 1.5% 0;" data-bs-toggle="modal" data-bs-target="#formModalUser">
         Tambah User Merchant
     </button>
     <table class="table">
@@ -34,7 +34,7 @@
                     <td>
                         <a href="<?= BASEURL; ?>/user/detail/<?= $user['idUser']; ?>"><span class="badge text-bg-primary">Detail</span></a>
                         <!-- Rubah data-id ke data-user-id -->
-                        <a href="<?= BASEURL ?>/user/ubah/<?= $user['idUser']; ?>" class="tampilModalUbahUser" data-bs-toggle="modal" data-bs-target="#formModal" data-user-id="<?= $user['idUser']; ?>"><span class="badge text-bg-warning">Ubah</span></a>
+                        <a href="<?= BASEURL ?>/user/ubah/<?= $user['idUser']; ?>" class="tampilModalUbahUser" data-bs-toggle="modal" data-bs-target="#formModalUser" data-user-id="<?= $user['idUser']; ?>"><span class="badge text-bg-warning">Ubah</span></a>
                         <a href="<?= BASEURL; ?>/user/hapus/<?= $user['idUser']; ?>"><span class="badge text-bg-danger" onclick="return confirm('Yakin mau hapus baris No <?= $rowCount-1 ?> ini?')">Hapus</span></a>
                     </td>
                 </tr>
@@ -44,7 +44,7 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="formModal" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="judulModalLabel" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="formModalUser" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="judulModalLabel" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -83,7 +83,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                <button type="submit" class="btn btn-primary" id="tombolData">Tambah Data</button>
+                <button type="submit" id="tombolData">Tambah Data</button> <!-- class="btn btn-primary" -->
                 </form>
             </div>
         </div>
