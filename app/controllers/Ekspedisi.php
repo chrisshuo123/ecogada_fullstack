@@ -110,6 +110,9 @@ class Ekspedisi extends Controller {
         $data['jenisEkspedisi'] = $ekspedisiModel->getJenisEkspedisi_By_IdEkspedisi($idEkspedisi);
         $data['idEkspedisi'] = $idEkspedisi;
         
+        // Buat dropdown List Ekspedisi (pada fitur Ubah, dropdown Ganti Ekspedisi)
+        $data['semuaEkspedisi'] = $ekspedisiModel->getAllEkspedisi();
+
         $this->view('templates/header', $data);
         $this->view('ekspedisi/detail', $data);
         $this->view('templates/footer');
@@ -117,28 +120,36 @@ class Ekspedisi extends Controller {
 
     public function tambahJenisEkspedisi() {
         try {
+            // DEBUG: Lihat semua data POST
+            error_log('=== DEBUG TAMBAH JENIS EKSPEDISI ===');
+            error_log('POST Data: ' . print_r($_POST, true));
+            error_log('idEkspedisi: ' . ($_POST['ekspedisi'] ?? 'NOT FOUND'));
+            error_log('======================================');
+
             // Get idEkspedisi from POST data for redirect
-            $idEkspedisi = $_POST['idEkspedisi'];
+            $idEkspedisi = $_POST['idEkspedisi'] ?? $_POST['idEkspedisiModal'] ?? null;
+            
+            if(!$idEkspedisi) {
+                error_log("ERROR: idEkspedisi is still null!");
+                // Fallback: coba dari URL atau session
+                $idEkspedisi = $this->getEkspedisiIdFromContext();
+
+                // If still null, redirect to main page
+                if(!$idEkspedisi) {
+                    header('Location: ' . BASEURL . '/ekspedisi');
+                    exit;
+                }
+            }
 
             if($this->model('Ekspedisi_model')->tambahDataJenisEkspedisi($_POST) > 0) {
                 Flasher::setFlash('berhasil', 'ditambahkan', 'success');
-
+                header('Location: ' . BASEURL . '/ekspedisi/detail/' . $idEkspedisi);
                 // Redirect back to the detail page instead of index
-                if(!empty($idEkspedisi)) {
-                    header('Location: ' . BASEURL . '/ekspedisi/detail/' . $idEkspedisi);
-                } else {
-                    header('Location: ' . BASEURL . '/ekspedisi');
-                }
                 exit;
             } else {
                 Flasher::setFlash('gagal', 'ditambahkan', 'danger');
-                
+                header('Location: ' . BASEURL . '/ekspedisi/detail/' . $idEkspedisi);
                 // Redirect back to detail page or index
-                if(!empty($idEkspedisi)) {
-                    header('Location: ' . BASEURL . '/ekspedisi/detail/' . $idEkspedisi);
-                } else {
-                    header('Location: ' . BASEURL . '/ekspedisi');
-                }
                 exit;
             }
         } catch(PDOException $e) {
@@ -185,21 +196,151 @@ class Ekspedisi extends Controller {
     }
 
     public function getUbahJenisEkspedisi() {
-        echo json_encode($this->model('Ekspedisi_model')->getJenisEkspedisiById($_POST['id']));
+        $result = $this->model('Ekspedisi_model')->getJenisEkspedisiById($_POST['idJenisEkspedisi']);
+        echo json_encode($result);
+        // echo json_encode($this->model('Ekspedisi_model')->getJenisEkspedisiById($_POST['id']));
     }
 
-    public function ubahJenisEkspedisi() {
-        if($this->model('Ekspedisi_model')->ubahDataEkspedisi($_POST) > 0) {
-            error_log("SUCCESS: Data Updated");
-            Flasher::setFlash('berhasil','diubah','success');
+    // Create Separate GET Endpoint for Fetching Data
+    public function getDataJenisEkspedisi() {
+        $data = $this->model('Ekspedisi_model')->getJenisEkspedisiById($_POST['idJenisEkspedisi']);
+        header('Content-Type: application/json');
+        echo json_encode($data);
+        exit;
+    }
+
+    // Create a method for dropdown if the ubahDataJenisEkspedisi method model ekspedisi not work 
+    public function getIdEkspedisi() {
+        // Check if parameter exists
+        if(!isset($_POST['idJenisEkspedisi']) || empty($_POST['idJenisEkspedisi'])) {
+            http_response_code(400);
+            echo json_encode([
+                'success' => false,
+                'error' => 'idJenisEkspedisi parameter missing or empty',
+                'recieved' => 'POST'
+            ]);
+            exit;
+        }
+
+        $idEkspedisi = $this->model('Ekspedisi_model')->getIdEkspedisiByJenisEkspedisi($_POST['idJenisEkspedisi']);
+
+        header('Content-Type: application/json');
+        
+        echo json_encode([
+            'success' => true,
+            'idEkspedisi' => $idEkspedisi,
+            'searchedFor' => $_POST['idJenisEkspedisi'] // Untuk debug
+        ]);
+        exit;
+    }
+
+    // Update Pindah Ekspedisi after make changes in Dropdown
+    public function pindahJenisEkspedisi() {
+        // Validate required parameters
+        if(!isset($_POST['idJenisEkspedisi']) && !isset($_POST['idEkspedisiBaru'])) {
+            Flasher::setFlash('gagal', 'dipindah - data tidak lengkap', 'danger');
             header('Location: ' . BASEURL . '/ekspedisi');
             exit;
+        }
+
+        $idJenisEkspedisi = $_POST['idJenisEkspedisi'];
+        $idEkspedisiBaru = $_POST['idEkspedisiBaru']; 
+        $idEkspedisiLama = $_POST['idEkspedisi']; // Current Ekspedisi
+
+        if($this->model('Ekspedisi_model')->ubahDataJenisEkspedisi($idJenisEkspedisi, $idEkspedisiBaru)) {
+            Flasher::setFlash('berhasil', 'dipindah', 'success');
+            header('Location: ' . BASEURL . '/ekspedisi/detail/' . $idEkspedisiBaru);
         } else {
-            error_log("FAILED: No rows updated");
+            Flasher::setFlash('gagal', 'dipindah', 'danger');
+            header('Location: ' . BASEURL . '/ekspedisi/detail/' . $idEkspedisiLama);
+        }
+        exit;
+    }
+
+    // Add this method to get ekspedisi data for dropdown
+    public function getIdEkspedisiDropdown() {
+        $idJenisEkspedisi = $_POST['idJenisEkspedisi'];
+        $idEkspedisi = $this->model('Ekspedisi_model')->getIdEkspedisiByJenisEkspedisi($idJenisEkspedisi);
+        
+        echo(json_encode(['idEkspedisi' => $idEkspedisi]));
+    }
+
+    // 
+
+    // Test sementara error idJenisEkspedisi, dan retest jika idJenisEkspedisi terhubung dengan idEkspedisi
+    public function testGetIdEkspedisi() {
+        // Test dengan ID yang pasti ada
+        $idJenisEkspedisi_fkLayananEkspedisi = [3,4,5,6,20,21,22,33,44,55];
+
+        foreach($idJenisEkspedisi_fkLayananEkspedisi as $id) {
+            $result = $this->model('Ekspedisi_model')->getIdEkspedisiByJenisEkspedisi($id);
+            echo "ID Jenis Ekspedisi: $id, ID Ekspedisi: " . ($result ? $result : 'NOT FOUND') . "<br>";
+        }
+        exit;
+    }
+
+    // This is for Update the data changes
+    public function ubahJenisEkspedisi() {
+        // Definisikan $idEkspedisi di luar blok if-else
+        $idEkspedisi = $_POST['idEkspedisi'] ?? 'null';
+
+        if(!$idEkspedisi) {
+            $idEkspedisi = $this->getEkspedisiIdFromContext();
+        }
+
+        // $redirectURL = !empty($idEkspedisi)
+        //     ? BASEURL . '/ekspedisi/detail/' . $idEkspedisi
+        //     : BASEURL . '/ekspedisi';
+
+        // Debug yang diterima:
+        error_log('=== DATA DITERIMA DI CONTROLLER ===');
+        error_log('idEkspedisi: ' . $idEkspedisi);
+        error_log('id: ' . ($_POST['id'] ?? 'NOT SET'));
+        error_log('jenisEkspedisi: ' . ($_POST['jenisEkspedisi'] ?? 'NOT SET'));
+        error_log('deskripsi: ' . ($_POST['deskrispi'] ?? 'NOT SET'));
+
+        $result = $this->model('Ekspedisi_model')->ubahDataJenisEkspedisi($_POST);
+
+        error_log('=== HASIL UPDATE ===');
+        error_log('Return value dari model: ' . $result);
+        error_log('Tipe data: ' . gettype($result));
+
+        //error_log('Update Result: ' . $result);
+
+        if($result > 0) {
+            error_log("SUCCESS: Data Updated");
+            Flasher::setFlash('berhasil','diubah','success');
+            header('Location: '. BASEURL . '/ekspedisi/detail/' . $idEkspedisi);
+
+            // $idEkspedisi = $_POST['idEkspedisi'];
+            // if(!empty($idEkspedisi)) {
+            //     header('Location: ' . BASEURL . '/ekspedisi/detail/' . $idEkspedisi);
+            // } else {
+            //     header('Location: ' . BASEURL . '/ekspedisi');
+            // }
+            exit;
+        } else {
+            error_log("FAILED: No rows updated - Return Value: " . $result);
             Flasher::setFlash('gagal','diubah','danger');
-            header('Location: ' . BASEURL . '/ekspedisi');
+            header('Location: ' . BASEURL . '/ekspedisi/detail/' . $idEkspedisi);
+            // if(!empty($idEkspedisi)) {
+            //     header('Location: ' . BASEURL . '/ekspedisi/detail/' . $idEkspedisi);
+            // } else {
+            //     header('Location: ' . BASEURL . '/ekspedisi');
+            // }
             exit; 
         }
+
+        header('Location: ' . $redirectURL);
+        exit;
+    }
+
+    private function getEkspedisiIdFromContext() {
+        // Coba dari berbagai sumber
+        return $_POST['idEkspedisiModal'] ??
+                $_POST['idEkspedisi_fkLayananEkspedisi'] ??
+                $_SESSION['current_ekspedisi_id'] ??
+                1; // fallback ke ID default
     }
 
     // Lakukan View Method langsung, ngedebug Test 1-5 Flush diatas ini
@@ -231,10 +372,6 @@ class Ekspedisi extends Controller {
         $this->view('templates/header', $data);
         $this->view('ekspedisi/detail2');
         $this->view('templates/footer');
-    }
-
-    public function getUbah() {
-        echo json_encode($this->model('Ekspedisi_model')->getEkspedisiById($_POST['id']));
     }
 
     // controllers/Ekspedisi.php Debugging
